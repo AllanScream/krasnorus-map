@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Broken Arrow — Республика Краснорусь</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap');
+:root{
+  --R:#d42a20;--RL:#e84030;--RG:rgba(212,42,32,.45);--RD:rgba(212,42,32,.12);
+  --B:#1768c4;--BL:#2a8be0;--BG:rgba(23,104,196,.45);--BD:rgba(23,104,196,.12);
+  --N:#4a5e6e;--W:#3dcc7a;--L:#e84030;
+  --bg:#040912;--s1:rgba(6,14,26,.97);--s2:rgba(10,20,36,.98);
+  --b1:rgba(60,110,160,.2);--b2:rgba(80,160,220,.4);
+  --t1:#aec8e0;--t2:rgba(174,200,224,.45);--ac:#3fc8f5;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--t1);font-family:'Rajdhani',sans-serif;cursor:crosshair;user-select:none}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9000;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.1) 2px,rgba(0,0,0,.1) 4px);opacity:.3}
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+#gbg{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background-image:linear-gradient(rgba(30,70,110,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(30,70,110,.09) 1px,transparent 1px);
+  background-size:56px 56px}
+#vgn{position:fixed;inset:0;z-index:2;pointer-events:none;
+  background:radial-gradient(ellipse at center,transparent 40%,rgba(2,6,14,.82) 100%)}
+#mc{position:fixed;inset:0;z-index:3}
+#fl{position:fixed;inset:0;z-index:8;pointer-events:none;opacity:0}
+#fl.fr{animation:fR .6s ease}
+#fl.fb{animation:fB .6s ease}
+@keyframes fR{0%{opacity:0;background:radial-gradient(circle at var(--fx) var(--fy),rgba(212,42,32,.38) 0%,transparent 55%)}40%{opacity:1}100%{opacity:0}}
+@keyframes fB{0%{opacity:0;background:radial-gradient(circle at var(--fx) var(--fy),rgba(23,104,196,.38) 0%,transparent 55%)}40%{opacity:1}100%{opacity:0}}
+
+/* VIEW BANNER */
+#vbanner{position:fixed;top:0;left:0;right:0;height:0;z-index:50;overflow:hidden;
+  background:linear-gradient(90deg,rgba(212,42,32,.6),rgba(23,104,196,.6));
+  font-size:10px;letter-spacing:4px;text-transform:uppercase;
+  display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;transition:height .3s}
+body.vm #vbanner{height:24px}
+body.vm #hud{top:24px}
+body.vm #flw{top:82px}
+body.vm .spanel{top:86px}
+body.vm #news-bar{bottom:0}
+body.vm .ptab{display:none}
+body.vm #pl{display:none}
+
+/* HUD */
+#hud{position:fixed;top:0;left:0;right:0;height:58px;z-index:20;display:flex;align-items:stretch;
+  background:linear-gradient(180deg,rgba(4,9,18,.98) 70%,transparent);border-bottom:1px solid var(--b2)}
+.hf{flex:1;display:flex;align-items:center;gap:10px;padding:0 16px;min-width:0}
+.hf.red{border-right:1px solid rgba(212,42,32,.2)}
+.hf.blue{justify-content:flex-end;border-left:1px solid rgba(23,104,196,.2)}
+.hn{font-size:14px;font-weight:700;letter-spacing:3px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px}
+.hn.red{color:var(--RL);text-shadow:0 0 14px var(--RG)}.hn.blue{color:var(--BL);text-shadow:0 0 14px var(--BG)}
+.hs{width:1px;height:26px;background:var(--b1);flex-shrink:0}
+.hv{text-align:center;flex-shrink:0}
+.hnum{font-family:'Share Tech Mono',monospace;font-size:20px;line-height:1}
+.hnum.red{color:var(--RL)}.hnum.blue{color:var(--BL)}
+.hlbl{font-size:9px;letter-spacing:2px;color:var(--t2);text-transform:uppercase}
+.hc{width:200px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:1px;border-left:1px solid var(--b1);border-right:1px solid var(--b1)}
+.hct{font-size:9px;letter-spacing:4px;color:var(--ac);text-transform:uppercase;opacity:.7}
+.hcm{font-size:13px;font-weight:700;letter-spacing:4px;color:var(--ac)}
+.hcd{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--t2);letter-spacing:2px}
+
+#flw{position:fixed;top:58px;left:0;right:0;z-index:20;height:4px;background:#08121e}
+#fl-r{position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,#5a0c08,var(--RL));transition:width .8s cubic-bezier(.4,0,.2,1)}
+#fl-b{position:absolute;right:0;top:0;height:100%;background:linear-gradient(270deg,#082c5a,var(--BL));transition:width .8s cubic-bezier(.4,0,.2,1)}
+
+/* MAP CONTROLS */
+#mctrl{position:fixed;bottom:42px;right:10px;z-index:22;display:flex;flex-direction:column;gap:4px}
+body.vm #mctrl{bottom:8px}
+.mcb{width:34px;height:34px;background:var(--s2);border:1px solid var(--b2);color:var(--t1);cursor:pointer;
+  font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .15s;border-radius:2px}
+.mcb:hover{background:rgba(63,200,245,.1);border-color:var(--ac);color:var(--ac)}
+.mcb.on{background:rgba(245,166,35,.12);border-color:#f5a623;color:#f5a623}
+
+/* SIDE PANELS */
+.spanel{position:fixed;top:62px;bottom:38px;width:272px;z-index:20;
+  background:var(--s1);display:flex;flex-direction:column;transition:transform .3s cubic-bezier(.4,0,.2,1)}
+#pl{left:0;border-right:1px solid var(--b2);transform:translateX(-100%)}
+#pr{right:0;border-left:1px solid var(--b2);transform:translateX(100%)}
+#pl.open{transform:translateX(0)}
+#pr.open{transform:translateX(0)}
+.ptab{position:fixed;top:50%;z-index:21;transform:translateY(-50%);background:var(--s2);
+  border:1px solid var(--b2);padding:12px 7px;cursor:pointer;writing-mode:vertical-rl;
+  font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--ac);
+  font-family:'Rajdhani',sans-serif;font-weight:600;transition:all .2s}
+.ptab:hover{background:rgba(63,200,245,.08)}
+#tl{left:0;border-left:none;border-radius:0 3px 3px 0}
+#tr{right:0;border-right:none;border-radius:3px 0 0 3px}
+#tl.open{left:272px}
+#tr.open{right:272px}
+.psc{flex:1;overflow-y:auto;overflow-x:hidden}
+.psc::-webkit-scrollbar{width:3px}
+.psc::-webkit-scrollbar-thumb{background:var(--b2)}
+
+/* Collapsible sections */
+.psec{border-bottom:1px solid var(--b1)}
+.pst{display:flex;align-items:center;gap:6px;padding:10px 14px;cursor:pointer;
+  font-size:9px;letter-spacing:3px;color:var(--ac);text-transform:uppercase;
+  transition:background .12s;user-select:none}
+.pst:hover{background:rgba(63,200,245,.05)}
+.pst::before{content:'';width:8px;height:1px;background:var(--ac);opacity:.5;flex-shrink:0}
+.psa{margin-left:auto;font-size:9px;transition:transform .2s;color:var(--t2)}
+.psb{overflow:hidden;max-height:1800px;transition:max-height .3s cubic-bezier(.4,0,.2,1)}
+.psb.col{max-height:0}
+.psi{padding:2px 14px 12px}
+
+/* form */
+label.fl{display:block;font-size:9px;letter-spacing:2px;color:var(--t2);text-transform:uppercase;margin-bottom:4px}
+select.fsel,input.finp{width:100%;background:rgba(10,20,36,.8);border:1px solid var(--b1);color:var(--t1);
+  padding:7px 10px;font-family:'Rajdhani',sans-serif;font-size:13px;outline:none;
+  appearance:none;cursor:pointer;border-radius:1px;transition:border-color .15s}
+select.fsel:focus,input.finp:focus{border-color:var(--b2)}
+select.fsel option{background:#060e1a}
+.frow{margin-bottom:8px}
+.rtogs{display:flex;gap:4px}
+.rtog{flex:1;padding:7px 3px;border:1px solid var(--b1);background:transparent;color:var(--t2);
+  font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;
+  text-transform:uppercase;cursor:pointer;border-radius:1px;transition:all .15s}
+.rtog.win.on {background:rgba(61,204,122,.1);border-color:var(--W);color:var(--W)}
+.rtog.loss.on{background:rgba(212,42,32,.1);border-color:var(--RL);color:var(--RL)}
+.rtog.red.on {background:rgba(212,42,32,.1);border-color:var(--RL);color:var(--RL)}
+.rtog.blue.on{background:rgba(23,104,196,.1);border-color:var(--BL);color:var(--BL)}
+.rtog.neu.on {background:rgba(74,94,110,.15);border-color:#6a8a9e;color:#8aabbc}
+.bgo{width:100%;margin-top:8px;padding:10px;background:rgba(63,200,245,.07);border:1px solid var(--ac);
+  color:var(--ac);font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:3px;
+  text-transform:uppercase;cursor:pointer;border-radius:1px;transition:all .2s}
+.bgo:hover:not(:disabled){background:rgba(63,200,245,.15)}
+.bgo:disabled{opacity:.3;cursor:not-allowed}
+.bxs{padding:6px 9px;border:1px solid var(--b1);background:transparent;color:var(--t2);
+  font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:600;letter-spacing:1.5px;
+  text-transform:uppercase;cursor:pointer;border-radius:1px;transition:all .15s}
+.bxs:hover{border-color:var(--b2);color:var(--t1)}
+.bxs.d:hover{border-color:var(--RL);color:var(--RL)}
+.bxs.g{border-color:rgba(245,166,35,.3);color:rgba(245,166,35,.8)}
+.bxs.g:hover{border-color:#f5a623;color:#f5a623}
+.bxs.c{border-color:rgba(63,200,245,.3);color:var(--ac)}
+.bxs.c:hover{border-color:var(--ac);background:rgba(63,200,245,.08)}
+.pmini{display:flex;align-items:center;gap:6px;padding:6px 8px;background:rgba(10,20,36,.5);
+  border-left:2px solid;margin-bottom:4px;font-size:12px}
+.pmini.red{border-color:var(--RL)}.pmini.blue{border-color:var(--BL)}
+.pmn{flex:1;font-weight:600;letter-spacing:1px}
+.pmini.red .pmn{color:var(--RL)}.pmini.blue .pmn{color:var(--BL)}
+.pms{font-family:'Share Tech Mono',monospace;font-size:10px}
+.pms.w{color:var(--W)}.pms.l{color:var(--L)}
+.srow{display:flex;align-items:center;gap:5px;padding:4px 6px;border-left:2px solid;cursor:pointer;
+  font-size:11px;margin-bottom:2px;transition:background .1s}
+.srow.red{border-color:var(--RL)}.srow.blue{border-color:var(--BL)}.srow.neutral{border-color:var(--N)}
+.srn{flex:1}.srs{font-family:'Share Tech Mono',monospace;font-size:10px}
+.srs.w{color:var(--W)}.srs.l{color:var(--L)}
+
+/* log */
+.li{padding:7px 14px;border-bottom:1px solid rgba(255,255,255,.04);animation:lin .25s ease}
+@keyframes lin{from{opacity:0;transform:translateX(6px)}to{opacity:1;transform:none}}
+.lt{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--t2);margin-bottom:2px}
+.lb{font-size:12px;line-height:1.5}
+.lb .lr{color:var(--RL);font-weight:700}.lb .lb2{color:var(--BL);font-weight:700}
+.lb .lm{color:var(--ac)}.lb .lw{color:var(--W)}.lb .ll{color:var(--L)}
+
+/* NEWS BAR */
+#nbar{position:fixed;bottom:0;left:0;right:0;z-index:20;
+  background:linear-gradient(0deg,rgba(4,9,18,.98) 80%,transparent);border-top:1px solid var(--b2)}
+#nhist{position:absolute;bottom:38px;left:0;right:0;background:var(--s2);border-top:1px solid var(--b2);
+  height:0;overflow:hidden;transition:height .3s cubic-bezier(.4,0,.2,1);z-index:19}
+#nhist.open{height:260px}
+#nhi{height:100%;overflow-y:auto;padding:4px 0}
+#nhi::-webkit-scrollbar{width:3px}
+#nhi::-webkit-scrollbar-thumb{background:var(--b2)}
+#ntick{height:38px;display:flex;align-items:center;padding:0 14px;gap:10px;cursor:pointer;transition:background .15s}
+#ntick:hover{background:rgba(63,200,245,.05)}
+.ntag{font-size:8px;letter-spacing:2px;color:var(--ac);text-transform:uppercase;
+  border:1px solid rgba(63,200,245,.3);padding:2px 6px;white-space:nowrap;flex-shrink:0}
+.ntag.red{color:var(--RL);border-color:rgba(212,42,32,.4)}
+.ntag.blue{color:var(--BL);border-color:rgba(23,104,196,.4)}
+.ntag.neutral{color:#8aabbc;border-color:rgba(74,94,110,.3)}
+#ntxt{font-size:12px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;flex:1}
+#nexp{font-size:9px;letter-spacing:2px;color:var(--t2);text-transform:uppercase;
+  border:none;background:none;cursor:pointer;font-family:'Rajdhani',sans-serif;flex-shrink:0}
+.ni{padding:8px 16px;border-bottom:1px solid rgba(255,255,255,.04);animation:nin .25s ease}
+@keyframes nin{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.ni-h{display:flex;align-items:center;gap:7px;margin-bottom:3px}
+.nibadge{font-size:8px;letter-spacing:2px;padding:2px 6px;text-transform:uppercase;font-weight:700}
+.nibadge.red{background:var(--RD);color:var(--RL);border:1px solid rgba(212,42,32,.3)}
+.nibadge.blue{background:var(--BD);color:var(--BL);border:1px solid rgba(23,104,196,.3)}
+.nibadge.neutral{background:rgba(74,94,110,.12);color:#8aabbc;border:1px solid rgba(74,94,110,.3)}
+.nit{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--t2)}
+.nittl{font-size:12px;font-weight:600;color:var(--ac);margin-bottom:2px}
+.nibody{font-size:11px;line-height:1.55;color:var(--t2)}
+.nibody .hr{color:var(--RL);font-weight:600}.nibody .hb{color:var(--BL);font-weight:600}.nibody .hm{color:var(--ac)}
+
+/* TOOLTIP */
+#tt{position:fixed;z-index:30;pointer-events:none;opacity:0;transition:opacity .15s;min-width:240px;max-width:285px}
+#tt.v{opacity:1}
+.ttw{background:rgba(4,9,18,.97);border:1px solid var(--b2);box-shadow:0 6px 28px rgba(0,0,0,.7)}
+.tts{height:2px}.tts.red{background:var(--RL)}.tts.blue{background:var(--BL)}.tts.neutral{background:var(--N)}
+.tth{padding:9px 12px 7px}
+.ttn{font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+.ttn.red{color:var(--RL)}.ttn.blue{color:var(--BL)}.ttn.neutral{color:var(--t1)}
+.tten{font-size:9px;color:var(--t2);letter-spacing:1px;margin-top:1px}
+.ttd{font-size:10px;color:var(--t2);margin-top:3px;line-height:1.4}
+.tto{font-size:9px;letter-spacing:1.5px;color:var(--t2);text-transform:uppercase;margin-top:4px}
+.ttms{font-size:10px;color:rgba(63,200,245,.62);margin-top:5px;line-height:1.4;
+  border-top:1px solid var(--b1);padding-top:5px;font-style:italic}
+.ttdv{height:1px;background:var(--b1);margin:0 12px}
+.ttstats{display:grid;grid-template-columns:1fr 1fr;padding:7px 12px}
+.ttsv{font-family:'Share Tech Mono',monospace;font-size:18px;font-weight:700;text-align:center}
+.ttsv.w{color:var(--W)}.ttsv.l{color:var(--L)}
+.ttsl{font-size:8px;letter-spacing:2px;color:var(--t2);text-transform:uppercase;text-align:center}
+.ttpl{padding:0 12px 6px}
+.ttpp{font-size:11px;color:var(--t2);margin-bottom:2px}
+.ttpp span{font-weight:700}.ttpp.red span{color:var(--RL)}.ttpp.blue span{color:var(--BL)}
+.ttlast{padding:5px 12px 0;border-top:1px solid var(--b1);font-size:9px;color:var(--t2)}
+.ttcap{padding:4px 12px 7px;font-size:10px;line-height:1.5;color:rgba(174,200,224,.55)}
+.tthint{padding:2px 12px 7px;font-size:8px;color:rgba(174,200,224,.22);letter-spacing:1px;text-transform:uppercase;text-align:center}
+
+/* MODALS */
+.mbg{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.76);backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.mbg.open{opacity:1;pointer-events:all}
+.mbox{background:var(--s2);border:1px solid var(--b2);min-width:340px;max-width:460px;width:92%;
+  box-shadow:0 0 50px rgba(0,0,0,.7);transform:scale(.95);transition:transform .2s}
+.mbg.open .mbox{transform:scale(1)}
+.mstr{height:3px}
+.mstr.camp{background:linear-gradient(90deg,var(--RL),transparent 40%,transparent 60%,var(--BL))}
+.mstr.red{background:var(--RL)}.mstr.gold{background:#f5a623}
+.mhd{padding:14px 18px 10px;border-bottom:1px solid var(--b1)}
+.mttl{font-size:17px;font-weight:700;letter-spacing:3px;text-transform:uppercase}
+.msub{font-size:10px;color:var(--t2);margin-top:3px}
+.mbod{padding:14px 18px}
+.mft{padding:10px 18px 14px;display:flex;gap:7px;border-top:1px solid var(--b1)}
+.mbtn{flex:1;padding:9px;border:1px solid;background:transparent;font-family:'Rajdhani',sans-serif;
+  font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .15s;border-radius:1px}
+.mbtn.cancel{border-color:var(--b1);color:var(--t2)}.mbtn.cancel:hover{border-color:var(--b2);color:var(--t1)}
+.mbtn.ok{border-color:var(--ac);color:var(--ac)}.mbtn.ok:hover:not(:disabled){background:rgba(63,200,245,.1)}
+.mbtn.ok:disabled{opacity:.3;cursor:not-allowed}
+.mbtn.rst{border-color:var(--RL);color:var(--RL)}.mbtn.rst:hover{background:var(--RD)}
+.prow{display:flex;align-items:center;gap:6px;padding:6px 8px;background:rgba(10,20,36,.6);
+  border:1px solid var(--b1);margin-bottom:5px}
+.pb{font-size:8px;letter-spacing:2px;font-weight:700;padding:3px 5px;text-transform:uppercase;cursor:pointer}
+.pb.red{background:var(--RD);color:var(--RL);border:1px solid rgba(212,42,32,.3)}
+.pb.blue{background:var(--BD);color:var(--BL);border:1px solid rgba(23,104,196,.3)}
+.pi{flex:1;background:transparent;border:none;border-bottom:1px solid var(--b1);color:var(--t1);
+  font-family:'Rajdhani',sans-serif;font-size:14px;padding:2px 4px;outline:none}
+.pi:focus{border-bottom-color:var(--b2)}
+.pd{background:none;border:none;color:var(--t2);cursor:pointer;font-size:14px;transition:color .15s}
+.pd:hover{color:var(--RL)}
+.badd{width:100%;padding:6px;background:transparent;border:1px dashed var(--b1);color:var(--t2);
+  font-family:'Rajdhani',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  cursor:pointer;transition:all .15s;margin-top:2px}
+.badd:hover{border-color:var(--b2);color:var(--t1)}
+
+/* TIMELAPSE */
+.tld{font-family:'Share Tech Mono',monospace;font-size:24px;text-align:center;color:var(--ac);
+  padding:8px 0;letter-spacing:4px}
+.tle{font-size:12px;color:var(--t2);text-align:center;min-height:38px;line-height:1.6;padding:0 4px}
+.tle .hr{color:var(--RL);font-weight:700}.tle .hb{color:var(--BL);font-weight:700}.tle .hm{color:var(--ac)}
+.tlpbar{width:100%;height:3px;background:rgba(255,255,255,.1);margin-top:10px;border-radius:2px}
+.tlpfill{height:100%;background:var(--ac);border-radius:2px;transition:width .2s}
+.tlbtns{display:flex;gap:7px;margin-top:12px}
+.tlb{flex:1;padding:9px;border:1px solid var(--b1);background:transparent;color:var(--t1);
+  font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;cursor:pointer;transition:all .15s;border-radius:1px}
+.tlb:hover{border-color:var(--b2)}
+.tlb.play{border-color:var(--ac);color:var(--ac)}.tlb.play:hover{background:rgba(63,200,245,.1)}
+.spd-row{display:flex;align-items:center;gap:8px;margin-top:10px}
+.spd-l{font-size:9px;letter-spacing:2px;color:var(--t2);text-transform:uppercase;white-space:nowrap}
+input[type=range]{flex:1;accent-color:var(--ac);cursor:pointer;height:14px}
+
+#notif{position:fixed;bottom:50px;left:50%;z-index:200;transform:translateX(-50%) translateY(12px);
+  background:var(--s2);border:1px solid var(--b2);padding:8px 20px;font-size:12px;letter-spacing:1.5px;
+  text-transform:uppercase;white-space:nowrap;opacity:0;transition:all .28s;pointer-events:none}
+#notif.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#notif.nw{border-color:var(--W);color:var(--W)}
+#notif.nl{border-color:var(--L);color:var(--L)}
+#notif.ni{border-color:var(--ac);color:var(--ac)}
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<div id="gbg"></div>
+<div id="vgn"></div>
+<canvas id="mc"></canvas>
+<div id="fl"></div>
+<div id="vbanner">👁 РЕЖИМ ПРОСМОТРА — только чтение</div>
+
+<!-- HUD -->
+<div id="hud">
+  <div class="hf red">
+    <div class="hn red" id="h-rn">КРАСНОРУСЬ</div><div class="hs"></div>
+    <div class="hv"><div class="hnum red" id="h-rs">0</div><div class="hlbl">Секторов</div></div><div class="hs"></div>
+    <div class="hv"><div class="hnum red" id="h-rw">0</div><div class="hlbl">Победы</div></div><div class="hs"></div>
+    <div class="hv"><div class="hnum red" id="h-rl">0</div><div class="hlbl">Пораж.</div></div>
+  </div>
+  <div class="hc"><div class="hct">Республика Краснорусь</div><div class="hcm">КАМПАНИЯ</div><div class="hcd" id="h-day">ДЕНЬ 1</div></div>
+  <div class="hf blue">
+    <div class="hv"><div class="hnum blue" id="h-bl">0</div><div class="hlbl">Пораж.</div></div><div class="hs"></div>
+    <div class="hv"><div class="hnum blue" id="h-bw">0</div><div class="hlbl">Победы</div></div><div class="hs"></div>
+    <div class="hv"><div class="hnum blue" id="h-bs">0</div><div class="hlbl">Секторов</div></div><div class="hs"></div>
+    <div class="hn blue" id="h-bn">СЕПАРАТИСТЫ</div>
+  </div>
+</div>
+<div id="flw"><div id="fl-r"></div><div id="fl-b"></div></div>
+
+<!-- MAP CONTROLS -->
+<div id="mctrl">
+  <button class="mcb" onclick="resetCam()" title="Сбросить вид">⌂</button>
+  <button class="mcb" onclick="doZoom(1.18)" title="Приблизить">+</button>
+  <button class="mcb" onclick="doZoom(1/1.18)" title="Отдалить">−</button>
+  <button class="mcb" id="dmb" onclick="toggleDragMode()" title="Режим перемещения секторов">✥</button>
+</div>
+
+<!-- LEFT PANEL -->
+<div class="ptab" id="tl" onclick="tgP('l')">◀ ШТАБ</div>
+<div class="spanel" id="pl">
+  <div class="psc">
+
+    <div class="psec">
+      <div class="pst" onclick="tgSec(this)">Записать бой<span class="psa">▾</span></div>
+      <div class="psb"><div class="psi">
+        <div class="frow"><label class="fl">Карта</label><select class="fsel" id="f-map" onchange="chkF()"></select></div>
+        <div class="frow"><label class="fl">Игрок</label><select class="fsel" id="f-player" onchange="chkF()"></select></div>
+        <div class="frow"><label class="fl">Результат</label>
+          <div class="rtogs">
+            <button class="rtog win"  id="rt-w" onclick="pickR('win')">✓ Победа</button>
+            <button class="rtog loss" id="rt-l" onclick="pickR('loss')">✗ Пораж.</button>
+          </div>
+        </div>
+        <div class="frow"><label class="fl">Владелец сектора после боя</label>
+          <div class="rtogs">
+            <button class="rtog red"  id="own-r" onclick="pickOwn('red')">🔴 КРА</button>
+            <button class="rtog blue" id="own-b" onclick="pickOwn('blue')">🔵 ССА</button>
+            <button class="rtog neu"  id="own-n" onclick="pickOwn('neutral')">⬜ НЕЙ</button>
+          </div>
+        </div>
+        <button class="bgo" id="bgo" onclick="doRec()" disabled>ЗАПИСАТЬ</button>
+      </div></div>
+    </div>
+
+    <div class="psec">
+      <div class="pst" onclick="tgSec(this)">Игроки<span class="psa">▾</span></div>
+      <div class="psb"><div class="psi">
+        <div id="pmini"></div>
+        <button class="bxs" style="width:100%;margin-top:4px" onclick="openSett()">⚙ Настроить игроков</button>
+      </div></div>
+    </div>
+
+    <div class="psec">
+      <div class="pst" onclick="tgSec(this)">Все секторы<span class="psa">▾</span></div>
+      <div class="psb"><div class="psi" id="srows"></div></div>
+    </div>
+
+    <div class="psec">
+      <div class="pst" onclick="tgSec(this)">Управление<span class="psa">▾</span></div>
+      <div class="psb"><div class="psi">
+        <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px">
+          <button class="bxs" onclick="doExp()">Экспорт</button>
+          <button class="bxs" onclick="document.getElementById('imp').click()">Импорт</button>
+          <button class="bxs g" onclick="openTL()">⏵ История</button>
+          <button class="bxs d" onclick="openRst()">Сброс</button>
+        </div>
+        <button class="bxs c" style="width:100%;margin-bottom:5px" onclick="copyViewLink()">🔗 Ссылка для просмотра</button>
+        <button class="bxs" style="width:100%;margin-bottom:5px;border-color:rgba(245,166,35,.3);color:rgba(245,166,35,.8)" onclick="document.getElementById('m-fb').classList.add('open')">🌐 Сетевой режим (Firebase)</button>
+        <div style="display:flex;gap:4px">
+          <button class="bxs" style="flex:1" onclick="resetNP()">↺ Позиции</button>
+          <button class="bxs" style="flex:1" onclick="resetEdges()">↺ Линии</button>
+        </div>
+        <input type="file" id="imp" accept=".json" style="display:none" onchange="doImp(this)">
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- RIGHT PANEL -->
+<div class="ptab" id="tr" onclick="tgP('r')">ЖУРНАЛ ▶</div>
+<div class="spanel" id="pr">
+  <div class="psec" style="border-bottom:1px solid var(--b1)">
+    <div class="pst" style="cursor:default">Журнал боёв</div>
+  </div>
+  <div class="psc" id="blog"></div>
+</div>
+
+<!-- NEWS BAR -->
+<div id="nbar">
+  <div id="nhist"><div id="nhi"></div></div>
+  <div id="ntick" onclick="tgNews()">
+    <span class="ntag neutral" id="ntag">СВОДКА</span>
+    <span id="ntxt">Ожидание данных с фронта...</span>
+    <button id="nexp">▲ ИСТОРИЯ</button>
+  </div>
+</div>
+
+<!-- TOOLTIP -->
+<div id="tt">
+  <div class="ttw">
+    <div class="tts neutral" id="tts"></div>
+    <div class="tth">
+      <div class="ttn neutral" id="ttn"></div>
+      <div class="tten" id="tten"></div>
+      <div class="ttd"  id="ttd"></div>
+      <div class="tto"  id="tto"></div>
+      <div class="ttms" id="ttms" style="display:none"></div>
+    </div>
+    <div class="ttdv"></div>
+    <div class="ttstats">
+      <div><div class="ttsv w" id="ttw">0</div><div class="ttsl">Победы</div></div>
+      <div><div class="ttsv l" id="ttl">0</div><div class="ttsl">Поражения</div></div>
+    </div>
+    <div class="ttpl" id="ttpl"></div>
+    <div class="ttlast" id="ttlast"></div>
+    <div class="ttcap"  id="ttcap" style="display:none"></div>
+    <div class="tthint" id="tthint">Кликни — записать бой</div>
+  </div>
+</div>
+<div id="notif"></div>
+
+<!-- MODAL: RECORD (map click) -->
+<div class="mbg" id="m-rec">
+  <div class="mbox"><div class="mstr camp"></div>
+    <div class="mhd"><div class="mttl" id="mr-ttl"></div><div class="msub" id="mr-sub"></div></div>
+    <div class="mbod">
+      <div class="frow"><label class="fl">Игрок</label><select class="fsel" id="mrp" onchange="chkMR()"></select></div>
+      <div class="frow"><label class="fl">Результат</label>
+        <div class="rtogs">
+          <button class="rtog win"  id="mrw" onclick="pMR('win')">✓ Победа</button>
+          <button class="rtog loss" id="mrl" onclick="pMR('loss')">✗ Поражение</button>
+        </div>
+      </div>
+      <div class="frow"><label class="fl">Владелец после боя</label>
+        <div class="rtogs">
+          <button class="rtog red"  id="mror" onclick="pMRO('red')">🔴 Краснорусь</button>
+          <button class="rtog blue" id="mrob" onclick="pMRO('blue')">🔵 ССА</button>
+          <button class="rtog neu"  id="mron" onclick="pMRO('neutral')">⬜ Нейтральный</button>
+        </div>
+      </div>
+    </div>
+    <div class="mft"><button class="mbtn cancel" onclick="closeM('m-rec')">Отмена</button><button class="mbtn ok" id="mrok" onclick="confRec()" disabled>Записать</button></div>
+  </div>
+</div>
+
+<!-- MODAL: SETTINGS -->
+<div class="mbg" id="m-sett">
+  <div class="mbox"><div class="mstr camp"></div>
+    <div class="mhd"><div class="mttl">Игроки кампании</div><div class="msub">Имена и принадлежность к стороне конфликта</div></div>
+    <div class="mbod">
+      <div id="ped"></div>
+      <div style="display:flex;gap:5px;margin-top:3px">
+        <button class="badd" style="border-color:rgba(212,42,32,.3);color:rgba(212,42,32,.7)" onclick="addP('red')">+ Правительство</button>
+        <button class="badd" style="border-color:rgba(23,104,196,.3);color:rgba(23,104,196,.7)" onclick="addP('blue')">+ Сепаратисты</button>
+      </div>
+    </div>
+    <div class="mft"><button class="mbtn cancel" onclick="closeM('m-sett')">Отмена</button><button class="mbtn ok" onclick="saveSett()">Сохранить</button></div>
+  </div>
+</div>
+
+<!-- MODAL: TIMELAPSE -->
+<div class="mbg" id="m-tl">
+  <div class="mbox" style="max-width:400px"><div class="mstr gold"></div>
+    <div class="mhd"><div class="mttl">⏵ История войны</div><div class="msub">Воспроизведение всех событий кампании с начала</div></div>
+    <div class="mbod">
+      <div class="tld" id="tld">ДЕНЬ 1</div>
+      <div class="tle" id="tle">Начало кампании. Все сектора нейтральны.</div>
+      <div class="tlpbar"><div class="tlpfill" id="tlp" style="width:0%"></div></div>
+      <div class="tlbtns">
+        <button class="tlb" onclick="tlStep(-1)">⏮</button>
+        <button class="tlb play" id="tlplay" onclick="tlTog()">▶ СТАРТ</button>
+        <button class="tlb" onclick="tlStep(1)">⏭</button>
+        <button class="tlb" onclick="tlRst()">↺</button>
+      </div>
+      <div class="spd-row">
+        <span class="spd-l">Скорость:</span>
+        <input type="range" id="spdr" min="1" max="10" value="5" oninput="tlSpd(this.value)">
+        <span class="spd-l" id="spdl">1.2с</span>
+      </div>
+    </div>
+    <div class="mft"><button class="mbtn cancel" onclick="closeTL()">Закрыть</button></div>
+  </div>
+</div>
+
+<!-- MODAL: SECTOR EDITOR -->
+<div class="mbg" id="m-sed">
+  <div class="mbox" style="max-width:520px"><div class="mstr camp"></div>
+    <div class="mhd"><div class="mttl" id="sed-ttl">Редактор сектора</div><div class="msub">Правый клик по сектору на карте для открытия</div></div>
+    <div class="mbod" style="max-height:70vh;overflow-y:auto">
+      <div class="frow"><label class="fl">Название (RU)</label><input class="finp" id="sed-ru" placeholder="Название на русском"></div>
+      <div class="frow"><label class="fl">Описание</label><textarea class="finp" id="sed-desc" rows="2" style="resize:vertical;font-family:inherit"></textarea></div>
+      <div class="frow"><label class="fl">📋 Текст миссии</label><textarea class="finp" id="sed-miss" rows="3" style="resize:vertical;font-family:inherit" placeholder="Оставь пустым если нет специальной миссии"></textarea></div>
+      <div class="frow"><label class="fl">⚔ После захвата — Краснорусь (КРА)</label><textarea class="finp" id="sed-cr" rows="2" style="resize:vertical;font-family:inherit"></textarea></div>
+      <div class="frow"><label class="fl">⚔ После захвата — ССА</label><textarea class="finp" id="sed-cb" rows="2" style="resize:vertical;font-family:inherit"></textarea></div>
+    </div>
+    <div class="mft"><button class="mbtn cancel" onclick="closeM('m-sed')">Отмена</button><button class="mbtn ok" onclick="saveSectorEdit()">Сохранить</button></div>
+  </div>
+</div>
+
+<!-- MODAL: FIREBASE -->
+<div class="mbg" id="m-fb">
+  <div class="mbox" style="max-width:500px"><div class="mstr" style="background:linear-gradient(90deg,#f5a623,#e8690a)"></div>
+    <div class="mhd"><div class="mttl">🌐 Сетевой режим — Firebase</div><div class="msub">Синхронизация карты в реальном времени для всех игроков</div></div>
+    <div class="mbod" style="max-height:65vh;overflow-y:auto">
+      <div id="fb-status-row" style="display:flex;align-items:center;gap:8px;padding:8px 0 12px;border-bottom:1px solid var(--b1);margin-bottom:12px">
+        <div id="fb-dot" style="width:8px;height:8px;border-radius:50%;background:#556677;flex-shrink:0"></div>
+        <span id="fb-status-txt" style="font-size:11px;color:var(--t2)">Не подключено (офлайн)</span>
+      </div>
+      <div style="background:rgba(10,20,36,.8);border:1px solid var(--b1);padding:12px;font-size:11px;line-height:1.8;color:var(--t2);margin-bottom:14px">
+        <strong style="color:var(--ac)">Инструкция по подключению:</strong><br>
+        1. Перейди на <a href="https://console.firebase.google.com" target="_blank" style="color:var(--bl)">console.firebase.google.com</a><br>
+        2. <strong style="color:var(--t1)">Создай проект</strong> → Add project (имя любое)<br>
+        3. В меню слева → <strong style="color:var(--t1)">Build → Realtime Database → Create Database</strong><br>
+        4. Выбери регион (Europe West рекомендуется) → Start in <strong style="color:var(--t1)">test mode</strong><br>
+        5. Скопируй URL из верхней строки (формат: <span style="font-family:monospace;color:var(--ac)">https://xxx-rtdb.europe-west1.firebasedatabase.app</span>)<br>
+        6. Вставь URL ниже и нажми «Подключить»
+      </div>
+      <div class="frow"><label class="fl">URL Realtime Database</label>
+        <input class="finp" id="fb-url" placeholder="https://your-project-rtdb.europe-west1.firebasedatabase.app">
+      </div>
+      <div class="frow"><label class="fl">Пароль администратора (для записи)</label>
+        <input class="finp" id="fb-pass" type="password" placeholder="Оставь пустым для публичного доступа">
+      </div>
+      <div id="fb-viewlink-wrap" style="display:none;margin-top:8px;padding:10px;background:rgba(10,20,36,.8);border:1px solid var(--b1)">
+        <div style="font-size:9px;letter-spacing:2px;color:var(--t2);text-transform:uppercase;margin-bottom:5px">Ссылка только для просмотра:</div>
+        <div id="fb-viewlink" style="font-size:10px;color:var(--ac);word-break:break-all;font-family:monospace"></div>
+        <button class="bxs c" style="margin-top:6px" onclick="copyFBLink()">Скопировать</button>
+      </div>
+    </div>
+    <div class="mft">
+      <button class="mbtn cancel" onclick="closeM('m-fb')">Закрыть</button>
+      <button class="mbtn ok" onclick="fbConnect()">🔌 Подключить</button>
+      <button class="mbtn rst" onclick="fbDisconnect()">Отключить</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: RESET -->
+<div class="mbg" id="m-rst">
+  <div class="mbox"><div class="mstr red"></div>
+    <div class="mhd"><div class="mttl">Сброс кампании</div><div class="msub">Все данные будут удалены безвозвратно</div></div>
+    <div class="mft"><button class="mbtn cancel" onclick="closeM('m-rst')">Отмена</button><button class="mbtn rst" onclick="doReset()">Сбросить всё</button></div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   VIEW MODE
+═══════════════════════════════════════════════ */
+const VIEW = new URLSearchParams(location.search).get('view')==='1';
+if (VIEW) document.body.classList.add('vm');
+
+/* ═══════════════════════════════════════════════
+   MAPS
+═══════════════════════════════════════════════ */
+const MAPS=[
+  {id:'chkalovsk', en:'Chkalovsk Airbase',      ru:'Авиабаза Чкаловск',   desc:'Крупная военная авиабаза. Господство в воздухе начинается здесь.',
+   miss:'Синие атакуют штаб авиабазы, где находятся высокопоставленные офицеры и разведданные. Красные держат оборону и ждут подкреплений.',
+   cR:'Штаб авиабазы отбит. Командование ВС КР эвакуировано. Силы ССА разгромлены резервами.',
+   cB:'ССА прорвали периметр. Часть командования захвачена, разведданные изъяты.'},
+  {id:'riga',      en:'Riga Airport',           ru:'Аэропорт Рига',       desc:'Международный аэропорт как военный плацдарм. Широкие открытые зоны.',
+   cR:'ВС КР установили контроль. Воздушный коридор западных поставок перекрыт.',
+   cB:'ССА захватили аэропорт. Плацдарм для переброски западных сил открыт.'},
+  {id:'baltcoast', en:'Baltiisk Spit',          ru:'Балтийская коса',     desc:'Узкий песчаный полуостров — стратегический проход к морю.',
+   cR:'Коса удержана. Морские поставки противника заблокированы.',
+   cB:'ССА заняли косу. Западное снаряжение пошло морем.'},
+  {id:'kaliningrad',en:'Kaliningrad',           ru:'Калининград',          desc:'Главный портовый город Красноруси. Ключевой логистический узел.',
+   miss:'В порт прибыл ценный груз. ДРГ и авангард ССА должны перехватить его до эвакуации. Красные стараются вывезти груз любой ценой.',
+   cR:'Груз вывезен. ССА уничтожили только ПВО — основная цель провалилась.',
+   cB:'ССА прорвались в порт. Груз эвакуировали, но город под контролем сепаратистов.'},
+  {id:'thedam',    en:'The Dam',                ru:'Дамба',               desc:'Гидроэлектростанция разделяет карту. Контроль = контроль над поймой.',
+   cR:'Дамба удержана. Возможность затопления использована против ССА.',
+   cB:'ССА взяли дамбу. Угроза затопления вынуждает ВС КР отступить.'},
+  {id:'highway',   en:'Highway of Death',       ru:'Шоссе смерти',        desc:'Прямое шоссе через выжженную равнину. Кто владеет им — диктует темп войны.',
+   cR:'ВС КР восстановили контроль. Колонны снабжения снова движутся на восток.',
+   cB:'ССА перекрыли артерию. Снабжение группировки ВС КР под угрозой срыва.'},
+  {id:'ignalina',  en:'Ignalina Powerplant',    ru:'Игналинская АЭС',     desc:'Атомная электростанция — энергетическое сердце региона.',
+   cR:'АЭС под защитой. Энергоснабжение восстановлено, ядерный шантаж снят.',
+   cB:'ССА захватили АЭС. Западные эксперты взяли объект под контроль.'},
+  {id:'chernyakh', en:'Chernyakhovsky District',ru:'Черняховский район',   desc:'Плотная советская застройка. Каждый квартал — укреплённый пункт.',
+   cR:'Район зачищен. ВС КР восстановили административный контроль.',
+   cB:'ССА укрепились в кварталах. Городские бои грозят затянуться.'},
+  {id:'deadcenter',en:'Dead Center',            ru:'Мёртвый центр',       desc:'Обнажённая развязка в центре равнины. Нет укрытий, нет пощады.',
+   cR:'Центральный узел под контролем. Пути отступления ССА перекрыты.',
+   cB:'ССА удержали перекрёсток. Прорыв ВС КР захлебнулся под огнём.'},
+  {id:'oilrush',   en:'Oil Rush',               ru:'Нефтяная лихорадка',  desc:'Нефтяные качалки на равнине. Топливо для войны — у того, кто здесь.',
+   cR:'Нефтяные объекты возвращены. Снабжение техники топливом восстановлено.',
+   cB:'ССА взяли нефтяные поля. Западные компании ждут концессий.'},
+  {id:'klaipeda',  en:'Klaipeda Rift',          ru:'Разлом Клайпеды',     desc:'Тектонический разлом разрезает город. Мосты через него — золото.',
+   cR:'Переправы контролируются ВС КР. Манёвр противника скован.',
+   cB:'ССА захватили мосты. Путь в глубь территории открыт для бронеколонн.'},
+  {id:'snowcastle',en:'Snow Castle',            ru:'Снежный замок',       desc:'Средневековая крепость на горном хребте. Господствует над всей долиной.',
+   cR:'Замок возвращён. ВС КР восстановили контроль над долиной.',
+   cB:'ССА водрузили флаг над замком. Высота даёт полный обзор позиций ВС КР.'},
+  {id:'suwalki',   en:'Suwalki Gap',            ru:'Сувалки',             desc:'Узкий перешеек. Самый спорный километр на карте.',
+   cR:'Коридор под контролем. Сухопутный контакт с союзниками обеспечен.',
+   cB:'ССА перекрыли коридор. Группировка ВС КР фактически окружена.'},
+  {id:'blackcoast',en:'Black Coast',            ru:'Чёрный берег',        desc:'Тёмные скалы и бурный прибой. Десант здесь — подвиг или самоубийство.',
+   cR:'Береговая линия удержана. Морской десант ССА отбит с потерями.',
+   cB:'ССА высадились. Плацдарм для наступления вглубь страны создан.'},
+  {id:'meander',   en:'Meandering River',       ru:'Извилистая река',     desc:'Капризная река петляет по пойме. Броды меняются после каждого дождя.',
+   cR:'ВС КР контролируют все переправы. Наступление ССА через реку блокировано.',
+   cB:'ССА форсировали реку. Понтонные мосты наведены под огнём.'},
+  {id:'jelgavas',  en:'Jelgavas Pils',          ru:'Елгава',              desc:'Старинный замок-штаб в центре города. Символ сопротивления.',
+   cR:'Замок освобождён. ВС КР контролируют исторический центр.',
+   cB:'ССА захватили замок-штаб. Символическая и оперативная победа.'},
+  {id:'bayofwinds',en:'Bay of Winds',           ru:'Залив ветров',        desc:'Открытая бухта с постоянными шквалами. Десант только в штиль.',
+   cR:'Береговая артиллерия контролирует залив. Морские пути ССА перекрыты.',
+   cB:'ССА установили контроль над бухтой. Западные поставки морем пошли.'},
+  {id:'ruda',      en:'Ruda Forest',            ru:'Руда',                desc:'Вековой сосновый бор с запутанными просеками. Лес знают только выжившие.',
+   cR:'Лес зачищен. Партизанские базы ССА в Руде уничтожены.',
+   cB:'ССА растворились в лесах Руды. Прочёсывание провалилось.'},
+  {id:'coldharbor',en:'Cold Harbor',            ru:'Холодная гавань',     desc:'Промышленный порт на краю залива. Нефтяные терминалы — мишень.',
+   cR:'Порт восстановлен. ВС КР возобновили снабжение морским путём.',
+   cB:'ССА захватили порт. Иностранные суда идут на разгрузку.'},
+  {id:'baltiysk',  en:'Baltiysk',               ru:'Балтийск',            desc:'Главная военно-морская база флота Красноруси.',
+   cR:'Флот в безопасности. Попытка захвата базы отражена.',
+   cB:'ССА ворвались в Балтийск. Часть кораблей затоплена экипажами.'},
+];
+
+const DEFAULT_EDGES=[
+  ['baltiysk','baltcoast'],['baltiysk','bayofwinds'],['baltiysk','coldharbor'],
+  ['baltcoast','bayofwinds'],['baltcoast','jelgavas'],
+  ['bayofwinds','jelgavas'],['bayofwinds','klaipeda'],
+  ['coldharbor','ruda'],['coldharbor','klaipeda'],
+  ['klaipeda','jelgavas'],['klaipeda','ruda'],['klaipeda','kaliningrad'],
+  ['jelgavas','riga'],['jelgavas','meander'],
+  ['riga','blackcoast'],['riga','suwalki'],['riga','meander'],
+  ['blackcoast','suwalki'],
+  ['ruda','chkalovsk'],['ruda','kaliningrad'],
+  ['chkalovsk','snowcastle'],['chkalovsk','chernyakh'],['chkalovsk','kaliningrad'],
+  ['snowcastle','chernyakh'],['snowcastle','oilrush'],
+  ['kaliningrad','chernyakh'],['kaliningrad','deadcenter'],
+  ['chernyakh','oilrush'],
+  ['deadcenter','meander'],['deadcenter','thedam'],['deadcenter','oilrush'],
+  ['meander','highway'],['highway','suwalki'],['highway','thedam'],
+  ['thedam','oilrush'],['thedam','ignalina'],['oilrush','ignalina'],
+];
+let activeEdges=DEFAULT_EDGES.map(e=>[...e]);
+
+/* ═══════════════════════════════════════════════
+   DEFAULT POSITIONS (world 1000×650)
+═══════════════════════════════════════════════ */
+const DPOS={
+  chkalovsk:{x:500,y:80},riga:{x:195,y:490},baltcoast:{x:75,y:385},
+  kaliningrad:{x:440,y:245},thedam:{x:600,y:458},highway:{x:375,y:515},
+  ignalina:{x:775,y:440},chernyakh:{x:640,y:195},deadcenter:{x:500,y:340},
+  oilrush:{x:720,y:325},klaipeda:{x:275,y:240},snowcastle:{x:720,y:90},
+  suwalki:{x:275,y:580},blackcoast:{x:125,y:485},meander:{x:350,y:405},
+  jelgavas:{x:220,y:365},bayofwinds:{x:68,y:270},ruda:{x:380,y:135},
+  coldharbor:{x:195,y:95},baltiysk:{x:80,y:175},
+};
+
+/* ═══════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════ */
+let S={
+  day:1,
+  players:[{id:'p1',name:'Игрок 1',faction:'red'},{id:'p2',name:'Игрок 2',faction:'blue'}],
+  sectors:{},log:[],news:[],
+};
+MAPS.forEach(m=>S.sectors[m.id]={owner:'neutral',wins:0,losses:0,lastResult:null,lastPlayer:null,battles:[]});
+
+let NP={}; // node positions
+let CAM={x:0,y:58,scale:1};
+
+/* ═══════════════════════════════════════════════
+   PERSISTENCE
+═══════════════════════════════════════════════ */
+function saveAll(){
+  try{
+    localStorage.setItem('ba6_s',JSON.stringify(S));
+    localStorage.setItem('ba6_np',JSON.stringify(NP));
+    localStorage.setItem('ba6_cam',JSON.stringify(CAM));
+    localStorage.setItem('ba6_edges',JSON.stringify(activeEdges));
+    // save collapsed
+    const col={};
+    document.querySelectorAll('.psb.col').forEach(b=>{
+      const t=b.previousElementSibling;
+      if(t) col[t.textContent.trim().replace('▾','').replace('▸','').trim()]=1;
+    });
+    localStorage.setItem('ba6_col',JSON.stringify(col));
+  }catch(e){}
+  // Push to Firebase if connected
+  if(typeof FB_CONNECTED!=='undefined'&&FB_CONNECTED)fbPush().catch(()=>{});
+}
+
+function loadAll(){
+  try{
+    const rs=localStorage.getItem('ba6_s');
+    if(rs){
+      const d=JSON.parse(rs);
+      if(d.day)S.day=d.day;
+      if(d.players?.length)S.players=d.players;
+      if(d.log)S.log=d.log;
+      if(d.news)S.news=d.news;
+      if(d.sectors)MAPS.forEach(m=>{if(d.sectors[m.id])S.sectors[m.id]={...S.sectors[m.id],...d.sectors[m.id]};});
+    }
+  }catch(e){}
+  try{
+    const rn=localStorage.getItem('ba6_np');
+    NP=rn?JSON.parse(rn):{};
+  }catch(e){NP={};}
+  MAPS.forEach(m=>{if(!NP[m.id])NP[m.id]={...DPOS[m.id]};});
+  try{
+    const re=localStorage.getItem('ba6_edges');
+    if(re)activeEdges=JSON.parse(re);
+  }catch(e){}
+  try{
+    const rc=localStorage.getItem('ba6_cam');
+    if(rc)CAM=JSON.parse(rc); else initCam();
+  }catch(e){initCam();}
+}
+
+function loadCollapsed(){
+  try{
+    const cc=localStorage.getItem('ba6_col');
+    if(!cc)return;
+    const col=JSON.parse(cc);
+    document.querySelectorAll('.pst').forEach(t=>{
+      const key=t.textContent.trim().replace('▾','').replace('▸','').trim();
+      if(col[key]){
+        const b=t.nextElementSibling;
+        if(b){b.classList.add('col');const a=t.querySelector('.psa');if(a)a.textContent='▸';}
+      }
+    });
+  }catch(e){}
+}
+
+function resetNP(){
+  MAPS.forEach(m=>NP[m.id]={...DPOS[m.id]});
+  saveAll();notify('Позиции секторов сброшены','ni');
+}
+
+/* ═══════════════════════════════════════════════
+   CAMERA
+═══════════════════════════════════════════════ */
+const WW=1000,WH=650,HH=62,NB=38;
+
+function initCam(){
+  const aH=innerHeight-HH-NB;
+  const sc=Math.min(innerWidth/WW,aH/WH)*0.88;
+  CAM.scale=sc; CAM.x=(innerWidth-WW*sc)/2; CAM.y=HH+(aH-WH*sc)/2;
+}
+
+function w2s(wx,wy){return{x:CAM.x+wx*CAM.scale,y:CAM.y+wy*CAM.scale};}
+function s2w(sx,sy){return{x:(sx-CAM.x)/CAM.scale,y:(sy-CAM.y)/CAM.scale};}
+
+function doZoom(f,cx,cy){
+  cx=cx??innerWidth/2; cy=cy??innerHeight/2;
+  const ns=Math.max(0.25,Math.min(5,CAM.scale*f));
+  const r=ns/CAM.scale;
+  CAM.x=cx-(cx-CAM.x)*r; CAM.y=cy-(cy-CAM.y)*r; CAM.scale=ns;
+  saveAll();
+}
+function resetCam(){initCam();saveAll();}
+
+/* ═══════════════════════════════════════════════
+   CANVAS + STARS
+═══════════════════════════════════════════════ */
+const cvs=document.getElementById('mc'),ctx=cvs.getContext('2d');
+const sC=document.getElementById('stars'),sX=sC.getContext('2d');
+let stars=[];
+
+function initStars(){
+  sC.width=innerWidth;sC.height=innerHeight;
+  stars=Array.from({length:160},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*.9+.15,a:Math.random()*.5+.1,sp:Math.random()*.4+.08}));
+}
+function drawStars(t){
+  sX.clearRect(0,0,sC.width,sC.height);
+  stars.forEach(s=>{const a=s.a*(0.7+0.3*Math.sin(t*s.sp));sX.beginPath();sX.arc(s.x,s.y,s.r,0,Math.PI*2);sX.fillStyle=`rgba(170,205,240,${a})`;sX.fill();});
+}
+function resize(){cvs.width=innerWidth;cvs.height=innerHeight;sC.width=innerWidth;sC.height=innerHeight;initStars();}
+resize();window.addEventListener('resize',resize);
+
+/* ═══════════════════════════════════════════════
+   DRAW
+═══════════════════════════════════════════════ */
+const CC={
+  red:    {stroke:'#e84030',fill:'rgba(212,42,32,.15)',  glow:'rgba(212,42,32,.45)',  text:'#ff7060'},
+  blue:   {stroke:'#2a8be0',fill:'rgba(23,104,196,.15)', glow:'rgba(23,104,196,.45)', text:'#60c0ff'},
+  neutral:{stroke:'#4a5e6e',fill:'rgba(30,50,70,.12)',   glow:'rgba(50,80,100,.18)',  text:'#7a9aae'},
+};
+
+const TR={},PR={};
+MAPS.forEach(m=>{TR[m.id]={t:1,from:'neutral',to:'neutral'};PR[m.id]={v:0};});
+
+function lerpH(c1,c2,t){
+  const h=c=>[parseInt(c.slice(1,3),16),parseInt(c.slice(3,5),16),parseInt(c.slice(5,7),16)];
+  const[r1,g1,b1]=h(c1),[r2,g2,b2]=h(c2);
+  return`rgb(${~~(r1+(r2-r1)*t)},${~~(g1+(g2-g1)*t)},${~~(b1+(b2-b1)*t)})`;
+}
+
+// Timelapse override
+let TL_SNAP=null;
+function ownerOf(id){return TL_SNAP?TL_SNAP[id]||'neutral':S.sectors[id]?.owner||'neutral';}
+
+function drawEdge(a,b,t,idx){
+  const pa=NP[a],pb=NP[b];if(!pa||!pb)return;
+  const A=w2s(pa.x,pa.y),B=w2s(pb.x,pb.y);
+  const oa=ownerOf(a),ob=ownerOf(b);
+  const isHovEdge=dragMode&&hovEdge===idx;
+  let col='rgba(40,75,110,.18)',lw=1;
+  if(isHovEdge){col='rgba(220,80,60,.9)';lw=3;}
+  else if(oa==='red'&&ob==='red'){col='rgba(212,42,32,.33)';lw=1.5;}
+  else if(oa==='blue'&&ob==='blue'){col='rgba(23,104,196,.33)';lw=1.5;}
+  else if((oa==='red'&&ob==='blue')||(oa==='blue'&&ob==='red')){col='rgba(200,165,40,.48)';lw=2;}
+  ctx.beginPath();ctx.moveTo(A.x,A.y);ctx.lineTo(B.x,B.y);ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.stroke();
+  // delete indicator on hover
+  if(isHovEdge){
+    const mx=(A.x+B.x)/2,my=(A.y+B.y)/2;
+    ctx.beginPath();ctx.arc(mx,my,7,0,Math.PI*2);ctx.fillStyle='rgba(220,80,60,.9)';ctx.fill();
+    ctx.font='bold 10px Rajdhani';ctx.textAlign='center';ctx.fillStyle='#fff';ctx.fillText('✕',mx,my+4);
+  }
+  if(!isHovEdge&&(oa==='red'&&ob==='blue')||(oa==='blue'&&ob==='red')){
+    const ph=((t*.5)+(A.x+B.x)*.001)%1;
+    ctx.beginPath();ctx.arc(A.x+(B.x-A.x)*ph,A.y+(B.y-A.y)*ph,2.5,0,Math.PI*2);
+    ctx.fillStyle='rgba(220,180,50,.85)';ctx.fill();
+  }
+}
+
+function drawNode(map,t){
+  const pos=NP[map.id];if(!pos)return;
+  const{x,y}=w2s(pos.x,pos.y);
+  const owner=ownerOf(map.id);
+  const s=S.sectors[map.id];
+  const tr=TR[map.id];
+  const isH=hovId===map.id&&!TL_SNAP;
+  const R=isH?20:14;
+
+  let c=CC[owner];
+  if(tr.t<1&&!TL_SNAP){
+    c={...CC[tr.to],stroke:lerpH(CC[tr.from].stroke,CC[tr.to].stroke,tr.t)};
+    tr.t=Math.min(1,tr.t+0.028);
+  }
+
+  // Pulse
+  const pr=PR[map.id];
+  if(pr.v>0&&!TL_SNAP){
+    const er=(1-pr.v)*48,pa=pr.v*.68;
+    ctx.beginPath();ctx.arc(x,y,R+er,0,Math.PI*2);
+    ctx.strokeStyle=owner==='red'?`rgba(212,42,32,${pa})`:owner==='blue'?`rgba(23,104,196,${pa})`:`rgba(74,94,110,${pa})`;
+    ctx.lineWidth=2.5;ctx.stroke();
+    pr.v=Math.max(0,pr.v-.016);
+  }
+
+  // Idle ring
+  if(owner!=='neutral'){
+    ctx.beginPath();ctx.arc(x,y,R+4+2.5*Math.sin(t*1.5+pos.x*.01),0,Math.PI*2);
+    ctx.strokeStyle=c.glow.replace('.45','.12');ctx.lineWidth=1.5;ctx.stroke();
+  }
+
+  // Drag hint ring
+  if(dragMode&&isH){
+    ctx.beginPath();ctx.arc(x,y,R+9,0,Math.PI*2);
+    ctx.setLineDash([3,3]);ctx.strokeStyle='rgba(245,166,35,.5)';ctx.lineWidth=1;ctx.stroke();ctx.setLineDash([]);
+  }
+
+  // Glow
+  const grd=ctx.createRadialGradient(x,y,0,x,y,R*3);
+  grd.addColorStop(0,c.glow.replace('.45',owner==='neutral'?'.07':'.17'));
+  grd.addColorStop(1,'transparent');
+  ctx.beginPath();ctx.arc(x,y,R*3,0,Math.PI*2);ctx.fillStyle=grd;ctx.fill();
+
+  // Circle
+  ctx.beginPath();ctx.arc(x,y,R,0,Math.PI*2);ctx.fillStyle=c.fill;ctx.fill();
+  ctx.beginPath();ctx.arc(x,y,R,0,Math.PI*2);ctx.strokeStyle=isH?'#fff':c.stroke;ctx.lineWidth=isH?2.5:1.8;ctx.stroke();
+  if(isH){ctx.beginPath();ctx.arc(x,y,R+5,0,Math.PI*2);ctx.setLineDash([4,4]);ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=1;ctx.stroke();ctx.setLineDash([]);}
+
+  ctx.beginPath();ctx.arc(x,y,3,0,Math.PI*2);ctx.fillStyle=isH?'#fff':c.stroke;ctx.fill();
+
+  if(!TL_SNAP&&s.lastResult){
+    ctx.font='11px Rajdhani';ctx.textAlign='center';
+    ctx.fillStyle=s.lastResult==='win'?'#3dcc7a':'#e84030';
+    ctx.fillText(s.lastResult==='win'?'✓':'✗',x,y-R-5);
+  }
+
+  ctx.font=isH?'bold 10.5px Rajdhani':'10px Rajdhani';
+  ctx.textAlign='center';ctx.fillStyle=isH?'#fff':c.text;
+  ctx.fillText(map.ru.toUpperCase(),x,y+R+13);
+
+  if(!TL_SNAP&&(s.wins>0||s.losses>0)){
+    ctx.font='8.5px Share Tech Mono';
+    ctx.fillStyle='rgba(61,204,122,.75)';ctx.fillText('W'+s.wins,x-11,y+R+23);
+    ctx.fillStyle='rgba(212,42,32,.75)';ctx.fillText('L'+s.losses,x+11,y+R+23);
+  }
+
+  if(!TL_SNAP){
+    const lp=s.lastPlayer?S.players.find(p=>p.id===s.lastPlayer):null;
+    if(lp){
+      ctx.font='8px Rajdhani';
+      ctx.fillStyle=lp.faction==='red'?'rgba(255,112,96,.6)':'rgba(96,180,255,.6)';
+      ctx.fillText(lp.name,x,y+R+(s.wins>0||s.losses>0?33:23));
+    }
+  }
+}
+
+function drawFrame(t){
+  ctx.clearRect(0,0,cvs.width,cvs.height);
+  activeEdges.forEach(([a,b],i)=>drawEdge(a,b,t,i));
+  MAPS.forEach(m=>drawNode(m,t));
+  // Draw "connecting" line from first selected node to mouse
+  if(connectFirst&&dragMode&&lastMouse){
+    const pos=NP[connectFirst];
+    if(pos){
+      const A=w2s(pos.x,pos.y);
+      ctx.beginPath();ctx.moveTo(A.x,A.y);ctx.lineTo(lastMouse.x,lastMouse.y);
+      ctx.strokeStyle='rgba(245,166,35,.7)';ctx.lineWidth=2;ctx.setLineDash([6,4]);ctx.stroke();ctx.setLineDash([]);
+      // circle on first node
+      ctx.beginPath();ctx.arc(A.x,A.y,16,0,Math.PI*2);
+      ctx.strokeStyle='rgba(245,166,35,.9)';ctx.lineWidth=2;ctx.stroke();
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   MOUSE
+═══════════════════════════════════════════════ */
+let hovId=null,dragMode=false,dragNode=null,panning=false,panSt={x:0,y:0},mdPos={x:0,y:0},didDrag=false;
+let connectFirst=null; // first node selected for edge creation
+let hovEdge=null;      // hovered edge index for deletion
+
+function edgeKey(a,b){return[a,b].sort().join('|');}
+function hasEdge(a,b){const k=edgeKey(a,b);return activeEdges.findIndex(e=>edgeKey(e[0],e[1])===k);}
+function toggleEdge(a,b){
+  const idx=hasEdge(a,b);
+  if(idx>=0){activeEdges.splice(idx,1);notify(`Линия удалена: ${a} ↔ ${b}`,'ni');}
+  else{activeEdges.push([a,b]);notify(`Линия добавлена: ${a} ↔ ${b}`,'nw');}
+  saveAll();
+}
+
+// Returns index of edge whose midpoint is within ~12px of screen pos
+function getEdgeHit(sx,sy){
+  const thresh=12;
+  for(let i=0;i<activeEdges.length;i++){
+    const[a,b]=activeEdges[i];
+    const pa=NP[a],pb=NP[b];if(!pa||!pb)continue;
+    const A=w2s(pa.x,pa.y),B=w2s(pb.x,pb.y);
+    // Check distance from point to segment
+    const dx=B.x-A.x,dy=B.y-A.y,len2=dx*dx+dy*dy;
+    if(len2===0)continue;
+    let t=((sx-A.x)*dx+(sy-A.y)*dy)/len2;
+    t=Math.max(0,Math.min(1,t));
+    const nx=A.x+t*dx,ny=A.y+t*dy;
+    if(Math.hypot(sx-nx,sy-ny)<thresh)return i;
+  }
+  return -1;
+}
+
+function toggleDragMode(){
+  dragMode=!dragMode;
+  if(!dragMode){connectFirst=null;hovEdge=null;}
+  document.getElementById('dmb').classList.toggle('on',dragMode);
+  cvs.style.cursor=dragMode?'grab':'crosshair';
+  notify(dragMode?'✥ Режим редактирования карты:\n• Тяни сектор — переместить\n• Клик на пустой + клик на другой — создать/удалить линию\n• Клик на линию — удалить':'Режим редактирования выключен','ni');
+}
+
+function getHit(sx,sy){
+  const{x:wx,y:wy}=s2w(sx,sy);
+  const hr=26/CAM.scale;
+  for(const[id,pos]of Object.entries(NP)){
+    if(Math.hypot(wx-pos.x,wy-pos.y)<hr)return id;
+  }
+  return null;
+}
+
+let lastMouse={x:0,y:0};
+
+cvs.addEventListener('wheel',e=>{
+  e.preventDefault();
+  doZoom(e.deltaY<0?1.1:1/1.1,e.clientX,e.clientY);
+},{passive:false});
+
+cvs.addEventListener('mousedown',e=>{
+  if(e.button!==0)return;
+  mdPos={x:e.clientX,y:e.clientY};didDrag=false;
+  const hit=getHit(e.clientX,e.clientY);
+  if(dragMode&&hit){dragNode=hit;cvs.style.cursor='grabbing';}
+  else if(!dragMode){panning=true;panSt={x:e.clientX-CAM.x,y:e.clientY-CAM.y};cvs.style.cursor='grabbing';}
+  else{panning=true;panSt={x:e.clientX-CAM.x,y:e.clientY-CAM.y};cvs.style.cursor='grabbing';}
+});
+
+cvs.addEventListener('mousemove',e=>{
+  lastMouse={x:e.clientX,y:e.clientY};
+  if(dragNode){
+    didDrag=true;
+    const{x,y}=s2w(e.clientX,e.clientY);
+    NP[dragNode]={x:Math.max(20,Math.min(WW-20,x)),y:Math.max(20,Math.min(WH-20,y))};
+  }else if(panning){
+    if(Math.abs(e.clientX-mdPos.x)>3||Math.abs(e.clientY-mdPos.y)>3)didDrag=true;
+    CAM.x=e.clientX-panSt.x;CAM.y=e.clientY-panSt.y;
+  }else{
+    const hit=getHit(e.clientX,e.clientY);
+    hovId=hit;
+    if(dragMode){
+      hovEdge=hit?-1:getEdgeHit(e.clientX,e.clientY);
+      cvs.style.cursor=hit?'grab':(hovEdge>=0?'pointer':'crosshair');
+      hideTT();
+    }else{
+      hovEdge=-1;
+      cvs.style.cursor=hit?'pointer':'crosshair';
+      if(hit&&!TL_SNAP)showTT(hit,e.clientX,e.clientY);else hideTT();
+    }
+  }
+});
+
+cvs.addEventListener('mouseup',e=>{
+  if(dragNode){saveAll();dragNode=null;cvs.style.cursor='grab';}
+  else if(panning){
+    if(!didDrag){
+      const hit=getHit(e.clientX,e.clientY);
+      if(dragMode){
+        // Edge/node editing mode click
+        if(hit){
+          // Node click: connect mode
+          if(connectFirst===null){
+            connectFirst=hit;
+            notify(`Выбран: ${MAPS.find(m=>m.id===hit)?.ru||hit}. Кликни второй сектор для линии.`,'ni');
+          } else if(connectFirst===hit){
+            connectFirst=null;
+            notify('Выбор отменён','ni');
+          } else {
+            toggleEdge(connectFirst,hit);
+            connectFirst=null;
+          }
+        } else {
+          // Edge click or empty click
+          const ei=getEdgeHit(e.clientX,e.clientY);
+          if(ei>=0){
+            const[a,b]=activeEdges[ei];
+            activeEdges.splice(ei,1);
+            hovEdge=null;saveAll();
+            notify(`Линия удалена: ${a} ↔ ${b}`,'nl');
+          } else {
+            connectFirst=null;
+          }
+        }
+      } else if(!VIEW){
+        if(hit)openRecM(hit);
+      }
+    }
+    saveAll();panning=false;cvs.style.cursor=hovId?'pointer':'crosshair';
+  }
+});
+
+cvs.addEventListener('contextmenu',e=>{
+  e.preventDefault();
+  if(VIEW)return;
+  const hit=getHit(e.clientX,e.clientY);
+  if(hit)openSectorEditor(hit);
+});
+
+cvs.addEventListener('mouseleave',()=>{panning=false;dragNode=null;hovId=null;hovEdge=null;hideTT();});
+
+/* ═══════════════════════════════════════════════
+   TOOLTIP
+═══════════════════════════════════════════════ */
+function showTT(id,mx,my){
+  const map=MAPS.find(m=>m.id===id),s=S.sectors[id];
+  const lp=s.lastPlayer?S.players.find(p=>p.id===s.lastPlayer):null;
+  document.getElementById('tts').className=`tts ${s.owner}`;
+  const tn=document.getElementById('ttn');tn.textContent=map.ru;tn.className=`ttn ${s.owner}`;
+  document.getElementById('tten').textContent=map.en;
+  document.getElementById('ttd').textContent=map.desc;
+  document.getElementById('tto').textContent=s.owner==='red'?'🔴 ВС Красноруси':s.owner==='blue'?'🔵 ССА (сепаратисты)':'⬜ Нейтральная зона';
+  const ms=document.getElementById('ttms');
+  if(map.miss){ms.textContent='📋 '+map.miss;ms.style.display='block';}else ms.style.display='none';
+  document.getElementById('ttw').textContent=s.wins;
+  document.getElementById('ttl').textContent=s.losses;
+  const pp=document.getElementById('ttpl');pp.innerHTML='';
+  [...new Set(s.battles.map(b=>b.player))].map(pid=>S.players.find(p=>p.id===pid)).filter(Boolean).forEach(p=>{
+    const w=s.battles.filter(b=>b.player===p.id&&b.result==='win').length;
+    const l=s.battles.filter(b=>b.player===p.id&&b.result==='loss').length;
+    const d=document.createElement('div');d.className=`ttpp ${p.faction}`;
+    d.innerHTML=`<span>${p.name}</span>: W${w} / L${l}`;pp.appendChild(d);
+  });
+  const le=document.getElementById('ttlast');
+  if(s.lastResult&&lp)le.innerHTML=`Последний бой: <span style="color:${s.lastResult==='win'?'var(--W)':'var(--L)'}">${s.lastResult==='win'?'ПОБЕДА':'ПОРАЖЕНИЕ'}</span> · ${lp.name}`;
+  else le.textContent='Боёв ещё не было';
+  const cap=document.getElementById('ttcap');
+  if(s.owner!=='neutral'&&s.battles.length>0){
+    const cd=s.owner==='red'?map.cR:map.cB;
+    if(cd){cap.textContent='⚔ '+cd;cap.style.display='block';}else cap.style.display='none';
+  }else cap.style.display='none';
+  document.getElementById('tthint').style.display=VIEW?'none':'block';
+  document.getElementById('tthint').textContent=dragMode?'ПКМ — редактировать описание':'Клик — записать бой · ПКМ — редактировать';
+  const tt=document.getElementById('tt');
+  const tw=265,th=320;
+  tt.style.left=(mx+16+tw>innerWidth?mx-tw-8:mx+16)+'px';
+  tt.style.top=Math.min(my-8,innerHeight-th-10)+'px';
+  tt.classList.add('v');
+}
+function hideTT(){document.getElementById('tt').classList.remove('v');}
+
+/* ═══════════════════════════════════════════════
+   RECORD MODAL
+═══════════════════════════════════════════════ */
+let mId=null,mRes=null,mOwn=null;
+
+function openRecM(id){
+  if(VIEW)return;
+  mId=id;mRes=null;mOwn=null;
+  const map=MAPS.find(m=>m.id===id);
+  document.getElementById('mr-ttl').textContent=map.ru;
+  document.getElementById('mr-sub').textContent=map.en+' — '+map.desc.slice(0,55)+'…';
+  const sel=document.getElementById('mrp');
+  sel.innerHTML='<option value="">— Выбери игрока —</option>';
+  S.players.forEach(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=(p.faction==='red'?'🔴 ':'🔵 ')+p.name;sel.appendChild(o);});
+  ['mrw','mrl','mror','mrob','mron'].forEach(x=>document.getElementById(x).classList.remove('on'));
+  document.getElementById('mrok').disabled=true;
+  document.getElementById('m-rec').classList.add('open');
+}
+function pMR(r){mRes=r;document.getElementById('mrw').classList.toggle('on',r==='win');document.getElementById('mrl').classList.toggle('on',r==='loss');chkMR();}
+function pMRO(o){mOwn=o;document.getElementById('mror').classList.toggle('on',o==='red');document.getElementById('mrob').classList.toggle('on',o==='blue');document.getElementById('mron').classList.toggle('on',o==='neutral');chkMR();}
+function chkMR(){document.getElementById('mrok').disabled=!(document.getElementById('mrp').value&&mRes&&mOwn);}
+function confRec(){const pid=document.getElementById('mrp').value;if(!mId||!mRes||!mOwn||!pid)return;applyResult(mId,pid,mRes,mOwn);closeM('m-rec');}
+
+/* ═══════════════════════════════════════════════
+   LEFT PANEL FORM
+═══════════════════════════════════════════════ */
+let fRes=null,fOwn=null;
+function pickR(r){fRes=r;document.getElementById('rt-w').classList.toggle('on',r==='win');document.getElementById('rt-l').classList.toggle('on',r==='loss');chkF();}
+function pickOwn(o){fOwn=o;document.getElementById('own-r').classList.toggle('on',o==='red');document.getElementById('own-b').classList.toggle('on',o==='blue');document.getElementById('own-n').classList.toggle('on',o==='neutral');chkF();}
+function chkF(){document.getElementById('bgo').disabled=!(document.getElementById('f-map').value&&document.getElementById('f-player').value&&fRes&&fOwn);}
+function doRec(){
+  const mid=document.getElementById('f-map').value,pid=document.getElementById('f-player').value;
+  if(!mid||!pid||!fRes||!fOwn)return;
+  applyResult(mid,pid,fRes,fOwn);
+  fRes=null;fOwn=null;
+  ['rt-w','rt-l','own-r','own-b','own-n'].forEach(x=>document.getElementById(x).classList.remove('on'));
+  chkF();
+}
+
+/* ═══════════════════════════════════════════════
+   APPLY RESULT
+═══════════════════════════════════════════════ */
+function applyResult(mapId,pid,result,newOwner){
+  const s=S.sectors[mapId];
+  const player=S.players.find(p=>p.id===pid);
+  const map=MAPS.find(m=>m.id===mapId);
+  if(!player||!map)return;
+  const prev=s.owner;
+  const isCapture=prev!==newOwner;
+  if(result==='win')s.wins++;else s.losses++;
+  s.owner=newOwner;s.lastResult=result;s.lastPlayer=pid;
+  s.battles.push({player:pid,result,date:new Date().toISOString()});
+  if(isCapture){
+    TR[mapId]={t:0,from:prev,to:newOwner};PR[mapId].v=1;
+    const pos=NP[mapId];
+    if(pos){
+      const{x,y}=w2s(pos.x,pos.y);const fl=document.getElementById('fl');
+      fl.style.setProperty('--fx',x+'px');fl.style.setProperty('--fy',y+'px');
+      fl.className=newOwner==='red'?'fr':newOwner==='blue'?'fb':'';
+      setTimeout(()=>fl.className='',700);
+    }
+  }else PR[mapId].v=0.5;
+  S.day++;
+  const entry={time:new Date().toISOString(),day:S.day,mapId,playerId:pid,result,newOwner};
+  S.log.unshift(entry);if(S.log.length>200)S.log.pop();
+  const ni=genNews(mapId,pid,result,isCapture,newOwner);
+  if(ni){S.news.unshift(ni);if(S.news.length>60)S.news.pop();}
+  saveAll();renderAll();prependLog(entry);
+  if(ni)prependNews(ni);
+  notify(result==='win'?`✓ ПОБЕДА — ${map.ru}`:`✗ ПОРАЖЕНИЕ — ${map.ru}`,result==='win'?'nw':'nl');
+}
+
+/* ═══════════════════════════════════════════════
+   NEWS GENERATION
+═══════════════════════════════════════════════ */
+const NT={
+  rc:[(m,p)=>`Командование ВС Красноруси подтвердило захват сектора <hm>${m.ru}</hm>. Подразделение <hr>${p.name}</hr> выполнило задачу.`,
+      (m,p)=>`По данным МО, войска под командованием <hr>${p.name}</hr> заняли ${m.ru}. Сепаратисты отступили с потерями.`,
+      (m,p)=>`Войска <hr>ВС КР</hr> водрузили флаг над ${m.ru}. <hr>${p.name}</hr> доложил о полной зачистке.`],
+  bc:[(m,p)=>`Силы ССА взяли <hm>${m.ru}</hm>. Операция <hb>${p.name}</hb> признана успешной союзниками.`,
+      (m,p)=>`Формирования <hb>ССА</hb> прорвали оборону у ${m.ru}. Западные союзники приветствовали успех.`,
+      (m,p)=>`По данным аналитиков, <hb>${p.name}</hb> провёл успешную операцию в районе ${m.ru}.`],
+  nc:[(m,p)=>`Сектор <hm>${m.ru}</hm> обозначен нейтральным. ${p.faction==='red'?`<hr>${p.name}</hr>`:`<hb>${p.name}</hb>`} зафиксировал изменение статуса.`],
+  rw:[(m,p)=>`<hr>ВС КР</hr> отразили наступление в секторе <hm>${m.ru}</hm>. Атака ССА захлебнулась. <hr>${p.name}</hr> уничтожил несколько групп противника.`,
+      (m,p)=>`Оборона ${m.ru} устояла. <hr>${p.name}</hr> лично руководил боем, не допустив прорыва.`],
+  rl:[(m,p)=>`ВС КР потерпели поражение в секторе <hm>${m.ru}</hm>. <hr>${p.name}</hr> сообщает о тяжёлых потерях.`,
+      (m,p)=>`Правительственные силы отступили из ${m.ru}. Провал под командованием <hr>${p.name}</hr> расследуется.`],
+  bw:[(m,p)=>`<hb>ССА</hb> удержали позиции в <hm>${m.ru}</hm>. <hb>${p.name}</hb> отразил все контратаки.`,
+      (m,p)=>`Западные советники сообщают: позиции в ${m.ru} устояли под командованием <hb>${p.name}</hb>.`],
+  bl:[(m,p)=>`<hb>ССА</hb> потерпели неудачу у <hm>${m.ru}</hm>. <hb>${p.name}</hb> получил приказ отступить.`,
+      (m,p)=>`Силы сепаратистов откатились от ${m.ru}. Потери <hb>${p.name}</hb> признаны критическими.`],
+  kr:[()=>`СРОЧНО: <hr>ВС КР</hr> успешно вывезли ценный груз из порта Калининград. ДРГ ССА успела уничтожить только ПВО. Груз в безопасности.`],
+  kb:[()=>`В Калининграде <hb>ССА</hb> провели рейдовую операцию. Авангард уничтожил ПВО, однако груз успели эвакуировать.`],
+  cr:[()=>`Авиабаза Чкаловск устояла. <hr>ВС КР</hr> держали периметр до подхода резервов. Командование эвакуировано. Силы ССА разгромлены.`],
+  cb:[()=>`Рейд на Авиабазу Чкаловск провалился. <hb>ССА</hb> не смогли захватить штаб — командование эвакуировалось.`],
+};
+const rnd=a=>a[~~(Math.random()*a.length)];
+
+function genNews(mapId,pid,result,isCapture,newOwner){
+  const map=MAPS.find(m=>m.id===mapId),player=S.players.find(p=>p.id===pid);
+  if(!map||!player)return null;
+  const f=player.faction;
+  let tpl,badge,title;
+  if(mapId==='kaliningrad'&&isCapture){tpl=rnd(f==='red'?NT.kr:NT.kb);badge=f;title='СПЕЦРЕПОРТАЖ — КАЛИНИНГРАД';}
+  else if(mapId==='chkalovsk'&&isCapture){tpl=rnd(f==='red'?NT.cr:NT.cb);badge=f;title='СПЕЦРЕПОРТАЖ — АВ. ЧКАЛОВСК';}
+  else if(newOwner==='neutral'){tpl=rnd(NT.nc);badge='neutral';title=`НЕЙТРАЛЬНЫЙ — ${map.ru.toUpperCase()}`;}
+  else if(isCapture&&f==='red'){tpl=rnd(NT.rc);badge='red';title=`ЗАХВАЧЕН — ${map.ru.toUpperCase()}`;}
+  else if(isCapture&&f==='blue'){tpl=rnd(NT.bc);badge='blue';title=`ЗАХВАЧЕН — ${map.ru.toUpperCase()}`;}
+  else if(f==='red'&&result==='win'){tpl=rnd(NT.rw);badge='red';title=`СВОДКА — ${map.ru.toUpperCase()}`;}
+  else if(f==='red'&&result==='loss'){tpl=rnd(NT.rl);badge='neutral';title=`ПОТЕРИ — ${map.ru.toUpperCase()}`;}
+  else if(f==='blue'&&result==='win'){tpl=rnd(NT.bw);badge='blue';title=`СВОДКА — ${map.ru.toUpperCase()}`;}
+  else{tpl=rnd(NT.bl);badge='neutral';title=`ПОТЕРИ — ${map.ru.toUpperCase()}`;}
+  return{time:new Date().toISOString(),day:S.day,badge,title,body:tpl(map,player),mapId};
+}
+
+function nbody(b){return b.replace(/<hr>/g,'<span class="hr">').replace(/<\/hr>/g,'</span>').replace(/<hb>/g,'<span class="hb">').replace(/<\/hb>/g,'</span>').replace(/<hm>/g,'<span class="hm">').replace(/<\/hm>/g,'</span>');}
+
+function prependNews(n){
+  appendNI(n,false);
+  document.getElementById('ntxt').textContent=n.body.replace(/<[^>]+>/g,'');
+  document.getElementById('ntag').className='ntag '+(n.badge||'neutral');
+  document.getElementById('ntag').textContent=n.badge==='red'?'КРА':n.badge==='blue'?'ССА':'НЕЙТР.';
+}
+function appendNI(n,toEnd){
+  const d=new Date(n.time),ts=`${d.toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'})} · ДЕНЬ ${n.day}`;
+  const item=document.createElement('div');item.className='ni';
+  item.innerHTML=`<div class="ni-h"><span class="nibadge ${n.badge||'neutral'}">${n.badge==='red'?'ВС КРА':n.badge==='blue'?'ССА':'НЕЙТР.'}</span><span class="nit">${ts}</span></div><div class="nittl">${n.title}</div><div class="nibody">${nbody(n.body)}</div>`;
+  const nl=document.getElementById('nhi');
+  if(toEnd)nl.appendChild(item);else nl.insertBefore(item,nl.firstChild);
+}
+function renderNews(){
+  document.getElementById('nhi').innerHTML='';
+  S.news.forEach(n=>appendNI(n,true));
+  if(S.news.length>0){
+    const n=S.news[0];
+    document.getElementById('ntxt').textContent=n.body.replace(/<[^>]+>/g,'');
+    document.getElementById('ntag').className='ntag '+(n.badge||'neutral');
+    document.getElementById('ntag').textContent=n.badge==='red'?'КРА':n.badge==='blue'?'ССА':'НЕЙТР.';
+  }
+}
+let newsOpen=false;
+function tgNews(){
+  newsOpen=!newsOpen;
+  document.getElementById('nhist').classList.toggle('open',newsOpen);
+  document.getElementById('nexp').textContent=newsOpen?'▼ СКРЫТЬ':'▲ ИСТОРИЯ';
+}
+
+/* ═══════════════════════════════════════════════
+   TIMELAPSE
+═══════════════════════════════════════════════ */
+let TLtime=[],TLstep=0,TLtimer=null,TLrun=false,TLspeed=1200;
+
+function buildTL(){
+  const evs=[...S.log].reverse();
+  const snap={};MAPS.forEach(m=>snap[m.id]='neutral');
+  TLtime=[{day:1,sectors:{...snap},ev:null}];
+  evs.forEach(e=>{
+    snap[e.mapId]=e.newOwner||S.players.find(p=>p.id===e.playerId)?.faction||'neutral';
+    TLtime.push({day:e.day,sectors:{...snap},ev:e});
+  });
+}
+
+function openTL(){
+  buildTL();TLstep=0;TLrun=false;clearInterval(TLtimer);
+  TL_SNAP={...TLtime[0].sectors};
+  updTL();
+  document.getElementById('tlplay').textContent='▶ СТАРТ';
+  document.getElementById('m-tl').classList.add('open');
+}
+function closeTL(){
+  clearInterval(TLtimer);TLrun=false;TL_SNAP=null;closeM('m-tl');
+}
+function updTL(){
+  const step=TLtime[TLstep];if(!step)return;
+  document.getElementById('tld').textContent=`ДЕНЬ ${step.day}`;
+  const pct=TLtime.length>1?(TLstep/(TLtime.length-1)*100):0;
+  document.getElementById('tlp').style.width=pct+'%';
+  TL_SNAP={...step.sectors};
+  if(step.ev){
+    const map=MAPS.find(m=>m.id===step.ev.mapId),player=S.players.find(p=>p.id===step.ev.playerId);
+    const mn=map?.ru||step.ev.mapId,pn=player?.name||'?',pf=player?.faction||'neutral';
+    const res=step.ev.result==='win'?'<span style="color:var(--W)">ПОБЕДА</span>':'<span style="color:var(--L)">ПОРАЖЕНИЕ</span>';
+    const ps=pf==='red'?`<span class="hr">${pn}</span>`:`<span class="hb">${pn}</span>`;
+    document.getElementById('tle').innerHTML=`${ps}: ${res} на <span class="hm">${mn}</span>`;
+  }else document.getElementById('tle').textContent='Начало кампании. Все сектора нейтральны.';
+}
+function tlStep(d){TLstep=Math.max(0,Math.min(TLtime.length-1,TLstep+d));updTL();}
+function tlTog(){
+  if(TLrun){clearInterval(TLtimer);TLrun=false;document.getElementById('tlplay').textContent='▶ СТАРТ';}
+  else{
+    if(TLstep>=TLtime.length-1)TLstep=0;
+    TLrun=true;document.getElementById('tlplay').textContent='⏸ ПАУЗА';
+    TLtimer=setInterval(()=>{
+      TLstep++;updTL();
+      if(TLstep>=TLtime.length-1){clearInterval(TLtimer);TLrun=false;document.getElementById('tlplay').textContent='▶ СТАРТ';}
+    },TLspeed);
+  }
+}
+function tlRst(){clearInterval(TLtimer);TLrun=false;TLstep=0;updTL();document.getElementById('tlplay').textContent='▶ СТАРТ';}
+function tlSpd(v){
+  // slider 1..10 → speed 2000..200ms (inverted)
+  TLspeed=Math.round(2200-v*200);
+  document.getElementById('spdl').textContent=(TLspeed/1000).toFixed(1)+'с';
+  if(TLrun){clearInterval(TLtimer);TLtimer=setInterval(()=>{TLstep++;updTL();if(TLstep>=TLtime.length-1){clearInterval(TLtimer);TLrun=false;document.getElementById('tlplay').textContent='▶ СТАРТ';}},TLspeed);}
+}
+
+/* ═══════════════════════════════════════════════
+   SETTINGS
+═══════════════════════════════════════════════ */
+let pedP=[];
+function openSett(){pedP=JSON.parse(JSON.stringify(S.players));renderPed();document.getElementById('m-sett').classList.add('open');}
+function renderPed(){
+  const list=document.getElementById('ped');list.innerHTML='';
+  pedP.forEach((p,i)=>{
+    const r=document.createElement('div');r.className='prow';
+    r.innerHTML=`<span class="pb ${p.faction}" onclick="flipF(${i})">${p.faction==='red'?'🔴 КРА':'🔵 ССА'}</span><input class="pi" value="${p.name}" placeholder="Имя игрока" oninput="pedP[${i}].name=this.value"><button class="pd" onclick="delP(${i})">✕</button>`;
+    list.appendChild(r);
+  });
+}
+function flipF(i){pedP[i].faction=pedP[i].faction==='red'?'blue':'red';renderPed();}
+function delP(i){pedP.splice(i,1);renderPed();}
+function addP(f){pedP.push({id:'p'+Date.now(),name:'',faction:f});renderPed();}
+function saveSett(){
+  const v=pedP.filter(p=>p.name.trim());
+  if(!v.length){notify('Нужен хотя бы один игрок','nl');return;}
+  S.players=v.map(p=>({...p,name:p.name.trim()}));
+  saveAll();renderAll();closeM('m-sett');notify('Настройки сохранены','nw');
+}
+
+/* ═══════════════════════════════════════════════
+   COLLAPSIBLE
+═══════════════════════════════════════════════ */
+function tgSec(title){
+  const body=title.nextElementSibling,arr=title.querySelector('.psa');
+  if(body&&body.classList.contains('psb')){
+    body.classList.toggle('col');
+    arr.textContent=body.classList.contains('col')?'▸':'▾';
+    saveAll();
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   VIEW LINK
+═══════════════════════════════════════════════ */
+function copyViewLink(){
+  const url=location.href.split('?')[0]+'?view=1';
+  navigator.clipboard.writeText(url).then(()=>notify('🔗 Ссылка скопирована в буфер','ni'))
+    .catch(()=>prompt('Ссылка для просмотра (только чтение):',url));
+}
+
+/* ═══════════════════════════════════════════════
+   SECTOR EDITOR
+═══════════════════════════════════════════════ */
+let sedId=null;
+function openSectorEditor(id){
+  sedId=id;
+  const map=MAPS.find(m=>m.id===id);if(!map)return;
+  document.getElementById('sed-ttl').textContent='✏ '+map.ru;
+  document.getElementById('sed-ru').value=map.ru||'';
+  document.getElementById('sed-desc').value=map.desc||'';
+  document.getElementById('sed-miss').value=map.miss||'';
+  document.getElementById('sed-cr').value=map.cR||'';
+  document.getElementById('sed-cb').value=map.cB||'';
+  document.getElementById('m-sed').classList.add('open');
+}
+function saveSectorEdit(){
+  if(!sedId)return;
+  const map=MAPS.find(m=>m.id===sedId);if(!map)return;
+  map.ru=document.getElementById('sed-ru').value.trim()||map.ru;
+  map.desc=document.getElementById('sed-desc').value.trim();
+  map.miss=document.getElementById('sed-miss').value.trim()||undefined;
+  map.cR=document.getElementById('sed-cr').value.trim();
+  map.cB=document.getElementById('sed-cb').value.trim();
+  // Save custom map data
+  try{
+    const cm=JSON.parse(localStorage.getItem('ba6_maps')||'{}');
+    cm[sedId]={ru:map.ru,desc:map.desc,miss:map.miss,cR:map.cR,cB:map.cB};
+    localStorage.setItem('ba6_maps',JSON.stringify(cm));
+  }catch(e){}
+  closeM('m-sed');renderAll();notify('Сектор обновлён','nw');
+}
+function loadCustomMaps(){
+  try{
+    const cm=JSON.parse(localStorage.getItem('ba6_maps')||'{}');
+    Object.entries(cm).forEach(([id,data])=>{
+      const map=MAPS.find(m=>m.id===id);
+      if(map)Object.assign(map,data);
+    });
+  }catch(e){}
+}
+
+/* ═══════════════════════════════════════════════
+   EDGE RESET
+═══════════════════════════════════════════════ */
+function resetEdges(){
+  activeEdges=DEFAULT_EDGES.map(e=>[...e]);
+  saveAll();notify('Линии сброшены','ni');
+}
+
+/* ═══════════════════════════════════════════════
+   FIREBASE SYNC
+═══════════════════════════════════════════════ */
+let FB_URL=null,FB_POLL=null,FB_CONNECTED=false;
+
+function fbSetStatus(state,txt){
+  const dot=document.getElementById('fb-dot');
+  const stxt=document.getElementById('fb-status-txt');
+  if(!dot||!stxt)return;
+  const colors={offline:'#556677',online:'#3dcc7a',syncing:'#f5a623',error:'#e84030'};
+  dot.style.background=colors[state]||'#556677';
+  dot.style.boxShadow=state==='online'?'0 0 6px #3dcc7a':'none';
+  stxt.textContent=txt;
+}
+
+function fbConnect(){
+  const url=document.getElementById('fb-url').value.trim().replace(/\/+$/,'');
+  if(!url){notify('Введи URL Firebase','nl');return;}
+  FB_URL=url;
+  localStorage.setItem('ba6_fb_url',url);
+  fbSetStatus('syncing','Подключение...');
+  fbPush().then(()=>{
+    FB_CONNECTED=true;
+    fbSetStatus('online','🟢 Подключено — синхронизация активна');
+    document.getElementById('fb-viewlink-wrap').style.display='block';
+    document.getElementById('fb-viewlink').textContent=location.href.split('?')[0]+'?view=1&fb='+encodeURIComponent(url);
+    if(FB_POLL)clearInterval(FB_POLL);
+    FB_POLL=setInterval(fbPull,4000);
+    notify('🌐 Firebase подключён','nw');
+    closeM('m-fb');
+  }).catch(e=>{
+    fbSetStatus('error','Ошибка: '+e.message);
+    notify('Ошибка подключения к Firebase','nl');
+  });
+}
+
+function fbDisconnect(){
+  FB_URL=null;FB_CONNECTED=false;
+  if(FB_POLL){clearInterval(FB_POLL);FB_POLL=null;}
+  localStorage.removeItem('ba6_fb_url');
+  fbSetStatus('offline','Не подключено (офлайн)');
+  document.getElementById('fb-viewlink-wrap').style.display='none';
+  notify('Firebase отключён','ni');
+}
+
+async function fbPush(){
+  if(!FB_URL)return;
+  const payload={day:S.day,players:S.players,sectors:S.sectors,log:S.log.slice(0,50),news:S.news.slice(0,30),nodePos:NP,edges:activeEdges};
+  const r=await fetch(FB_URL+'/campaign.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  if(!r.ok)throw new Error('HTTP '+r.status);
+}
+
+let _fbLastHash='';
+async function fbPull(){
+  if(!FB_URL)return;
+  try{
+    const r=await fetch(FB_URL+'/campaign.json');
+    if(!r.ok)return;
+    const d=await r.json();if(!d)return;
+    const hash=JSON.stringify({day:d.day,sectors:d.sectors});
+    if(hash===_fbLastHash)return;
+    _fbLastHash=hash;
+    if(d.day)S.day=d.day;
+    if(d.players?.length)S.players=d.players;
+    if(d.log)S.log=d.log;
+    if(d.news)S.news=d.news;
+    if(d.sectors)MAPS.forEach(m=>{if(d.sectors[m.id])S.sectors[m.id]={...S.sectors[m.id],...d.sectors[m.id]};});
+    if(d.nodePos)Object.assign(NP,d.nodePos);
+    if(d.edges)activeEdges=d.edges;
+    renderAll();renderLog();renderNews();
+  }catch(e){}
+}
+
+function copyFBLink(){
+  if(!FB_URL)return;
+  const url=location.href.split('?')[0]+'?view=1&fb='+encodeURIComponent(FB_URL);
+  navigator.clipboard.writeText(url).then(()=>notify('🔗 Ссылка скопирована','ni')).catch(()=>prompt('Ссылка просмотра:',url));
+}
+
+function renderAll(){
+  const secs=Object.values(S.sectors),total=MAPS.length;
+  const rs=secs.filter(s=>s.owner==='red').length,bs=secs.filter(s=>s.owner==='blue').length;
+  const stats=f=>({
+    w:secs.reduce((a,s)=>a+s.battles.filter(b=>{const p=S.players.find(pp=>pp.id===b.player);return p&&p.faction===f&&b.result==='win';}).length,0),
+    l:secs.reduce((a,s)=>a+s.battles.filter(b=>{const p=S.players.find(pp=>pp.id===b.player);return p&&p.faction===f&&b.result==='loss';}).length,0),
+  });
+  const rS=stats('red'),bS=stats('blue');
+  document.getElementById('h-rn').textContent=S.players.filter(p=>p.faction==='red').map(p=>p.name).join(' / ')||'КРАСНОРУСЬ';
+  document.getElementById('h-bn').textContent=S.players.filter(p=>p.faction==='blue').map(p=>p.name).join(' / ')||'СЕПАРАТИСТЫ';
+  document.getElementById('h-rs').textContent=rs;document.getElementById('h-bs').textContent=bs;
+  document.getElementById('h-rw').textContent=rS.w;document.getElementById('h-rl').textContent=rS.l;
+  document.getElementById('h-bw').textContent=bS.w;document.getElementById('h-bl').textContent=bS.l;
+  document.getElementById('h-day').textContent=`ДЕНЬ ${S.day}`;
+  document.getElementById('fl-r').style.width=(rs/total*100)+'%';
+  document.getElementById('fl-b').style.width=(bs/total*100)+'%';
+  const fm=document.getElementById('f-map'),pvm=fm.value;
+  fm.innerHTML='<option value="">— Выбери карту —</option>';
+  MAPS.forEach(m=>{const o=document.createElement('option');o.value=m.id;const ic=S.sectors[m.id].owner==='red'?'🔴':S.sectors[m.id].owner==='blue'?'🔵':'⬜';o.textContent=ic+' '+m.ru;if(m.id===pvm)o.selected=true;fm.appendChild(o);});
+  const fp=document.getElementById('f-player'),pvp=fp.value;
+  fp.innerHTML='<option value="">— Выбери игрока —</option>';
+  S.players.forEach(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=(p.faction==='red'?'🔴':'🔵')+' '+p.name;if(p.id===pvp)o.selected=true;fp.appendChild(o);});
+  const pm=document.getElementById('pmini');pm.innerHTML='';
+  S.players.forEach(p=>{
+    const w=secs.reduce((a,s)=>a+s.battles.filter(b=>b.player===p.id&&b.result==='win').length,0);
+    const l=secs.reduce((a,s)=>a+s.battles.filter(b=>b.player===p.id&&b.result==='loss').length,0);
+    const d=document.createElement('div');d.className=`pmini ${p.faction}`;
+    d.innerHTML=`<span class="pmn">${p.name}</span><span class="pms w">W${w}</span><span class="pms l">L${l}</span>`;
+    pm.appendChild(d);
+  });
+  const sl=document.getElementById('srows');sl.innerHTML='';
+  MAPS.forEach(m=>{
+    const s=S.sectors[m.id];
+    const r=document.createElement('div');r.className=`srow ${s.owner}`;
+    r.innerHTML=`<span class="srn">${m.ru}</span><span class="srs w">W${s.wins}</span><span class="srs l">L${s.losses}</span>`;
+    if(!VIEW){r.onclick=()=>openRecM(m.id);r.addEventListener('mouseenter',()=>r.style.background='rgba(255,255,255,.04)');r.addEventListener('mouseleave',()=>r.style.background='');}
+    sl.appendChild(r);
+  });
+  chkF();
+}
+
+/* ═══════════════════════════════════════════════
+   LOG
+═══════════════════════════════════════════════ */
+function renderLog(){document.getElementById('blog').innerHTML='';S.log.slice(0,60).forEach(e=>appendLog(e,true));}
+function prependLog(e){appendLog(e,false);}
+function appendLog(e,toEnd){
+  const map=MAPS.find(m=>m.id===e.mapId),p=S.players.find(p=>p.id===e.playerId);
+  if(!map||!p)return;
+  const d=new Date(e.time),ts=`${d.toLocaleDateString('ru')} ${d.toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'})}`;
+  const item=document.createElement('div');item.className='li';
+  const res=e.result==='win'?'<span class="lw">ПОБЕДА</span>':'<span class="ll">ПОРАЖЕНИЕ</span>';
+  const ownStr=e.newOwner?` → <span style="color:${e.newOwner==='red'?'var(--RL)':e.newOwner==='blue'?'var(--BL)':'#6a8a9e'}">${e.newOwner==='red'?'КРА':e.newOwner==='blue'?'ССА':'НЕЙ'}</span>`:'';
+  item.innerHTML=`<div class="lt">ДЕНЬ ${e.day} · ${ts}</div><div class="lb"><span class="${p.faction==='red'?'lr':'lb2'}">${p.name}</span>: ${res} на <span class="lm">${map.ru}</span>${ownStr}</div>`;
+  const log=document.getElementById('blog');
+  if(toEnd)log.appendChild(item);else log.insertBefore(item,log.firstChild);
+}
+
+/* ═══════════════════════════════════════════════
+   MISC
+═══════════════════════════════════════════════ */
+function tgP(side){
+  const p=document.getElementById('p'+side),t=document.getElementById('t'+side);
+  const o=!p.classList.contains('open');p.classList.toggle('open',o);t.classList.toggle('open',o);
+}
+function closeM(id){document.getElementById(id).classList.remove('open');}
+function openRst(){document.getElementById('m-rst').classList.add('open');}
+function doReset(){
+  S.day=1;S.log=[];S.news=[];
+  MAPS.forEach(m=>S.sectors[m.id]={owner:'neutral',wins:0,losses:0,lastResult:null,lastPlayer:null,battles:[]});
+  saveAll();renderAll();renderLog();renderNews();closeM('m-rst');notify('Кампания сброшена','nl');
+}
+function doExp(){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify({state:S,nodePos:NP,edges:activeEdges},null,2)],{type:'application/json'}));
+  a.download=`krasnorus_day${S.day}.json`;a.click();notify('Экспорт выполнен','nw');
+}
+function doImp(inp){
+  const f=inp.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    try{
+      const d=JSON.parse(e.target.result);
+      if(d.state)S=d.state;else S=d;
+      if(d.nodePos){NP={...d.nodePos};MAPS.forEach(m=>{if(!NP[m.id])NP[m.id]={...DPOS[m.id]};});}
+      if(d.edges)activeEdges=d.edges;
+      saveAll();renderAll();renderLog();renderNews();notify('Данные загружены','nw');
+    }catch{notify('Ошибка импорта','nl');}
+  };
+  r.readAsText(f);inp.value='';
+}
+let nT=null;
+function notify(msg,cls){
+  const n=document.getElementById('notif');n.textContent=msg;n.className='show '+cls;
+  if(nT)clearTimeout(nT);nT=setTimeout(()=>n.className='',2600);
+}
+
+/* ═══════════════════════════════════════════════
+   LOOP
+═══════════════════════════════════════════════ */
+function loop(ts){drawFrame(ts*.001);drawStars(ts*.001);requestAnimationFrame(loop);}
+
+/* ═══════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════ */
+loadAll();
+loadCustomMaps();
+// Auto-connect Firebase if URL was saved or passed via ?fb= param
+(()=>{
+  const p=new URLSearchParams(location.search);
+  const fbParam=p.get('fb');
+  const fbSaved=localStorage.getItem('ba6_fb_url');
+  if(fbParam||fbSaved){
+    const url=(fbParam?decodeURIComponent(fbParam):fbSaved).trim().replace(/\/+$/,'');
+    FB_URL=url;
+    document.getElementById('fb-url').value=url;
+    fbSetStatus('syncing','Подключение к Firebase...');
+    fbPull().then(()=>{
+      FB_CONNECTED=true;
+      fbSetStatus('online','🟢 Подключено — синхронизация активна');
+      FB_POLL=setInterval(fbPull,4000);
+      if(!VIEW)fbPush().catch(()=>{});
+    }).catch(()=>fbSetStatus('error','Ошибка подключения'));
+  }
+})();
+renderAll();
+renderLog();
+renderNews();
+loadCollapsed();
+// Init slider display
+tlSpd(document.getElementById('spdr').value);
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
