@@ -32,6 +32,22 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9000;
 @keyframes fR{0%{opacity:0;background:radial-gradient(circle at var(--fx) var(--fy),rgba(212,42,32,.38) 0%,transparent 55%)}40%{opacity:1}100%{opacity:0}}
 @keyframes fB{0%{opacity:0;background:radial-gradient(circle at var(--fx) var(--fy),rgba(23,104,196,.38) 0%,transparent 55%)}40%{opacity:1}100%{opacity:0}}
 
+
+/* SECTOR EDITOR styled */
+.sed-field{margin-bottom:14px}
+.sed-label{font-size:9px;letter-spacing:2.5px;color:var(--ac);text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.sed-label::after{content:'';flex:1;height:1px;background:rgba(63,200,245,.15)}
+.sed-input,.sed-textarea{width:100%;background:rgba(4,9,18,.85);border:1px solid rgba(60,110,160,.3);
+  color:var(--t1);padding:9px 12px;font-family:'Rajdhani',sans-serif;font-size:13px;
+  outline:none;border-radius:2px;transition:border-color .15s,box-shadow .15s;resize:vertical;line-height:1.5}
+.sed-input:focus,.sed-textarea:focus{border-color:var(--ac);box-shadow:0 0 0 1px rgba(63,200,245,.15),inset 0 0 12px rgba(63,200,245,.04)}
+.sed-textarea{min-height:64px}
+.sed-section{margin-bottom:6px;padding:10px 12px;background:rgba(10,20,36,.6);border-left:2px solid rgba(63,200,245,.25)}
+.sed-section.red-sec{border-left-color:rgba(212,42,32,.4)}
+.sed-section.blue-sec{border-left-color:rgba(23,104,196,.4)}
+
+.srn-btn{background:none;border:none;color:#6a8a9e;cursor:pointer;font-size:10px;padding:0 2px;opacity:.7;transition:opacity .15s}
+.srn-btn:hover{opacity:1;color:#8aabbc}
 /* VIEW BANNER */
 #vbanner{position:fixed;top:0;left:0;right:0;height:0;z-index:50;overflow:hidden;
   background:linear-gradient(90deg,rgba(212,42,32,.6),rgba(23,104,196,.6));
@@ -60,9 +76,9 @@ body.vm #pl{display:none}
 .hlbl{font-size:9px;letter-spacing:2px;color:var(--t2);text-transform:uppercase}
 .hc{width:200px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:1px;border-left:1px solid var(--b1);border-right:1px solid var(--b1)}
-.hct{font-size:9px;letter-spacing:4px;color:var(--ac);text-transform:uppercase;opacity:.7}
-.hcm{font-size:13px;font-weight:700;letter-spacing:4px;color:var(--ac)}
-.hcd{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--t2);letter-spacing:2px}
+
+.hcm{font-size:13px;font-weight:700;letter-spacing:2px;color:var(--ac);text-transform:uppercase;text-align:center;line-height:1.2}
+.hcd{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--t2);letter-spacing:3px;text-align:center;margin-top:3px}
 
 #flw{position:fixed;top:58px;left:0;right:0;z-index:20;height:4px;background:#08121e}
 #fl-r{position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,#5a0c08,var(--RL));transition:width .8s cubic-bezier(.4,0,.2,1)}
@@ -71,6 +87,7 @@ body.vm #pl{display:none}
 /* MAP CONTROLS */
 #mctrl{position:fixed;bottom:42px;right:10px;z-index:22;display:flex;flex-direction:column;gap:4px}
 body.vm #mctrl{bottom:8px}
+body.vm #dmb{display:none}
 .mcb{width:34px;height:34px;background:var(--s2);border:1px solid var(--b2);color:var(--t1);cursor:pointer;
   font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .15s;border-radius:2px}
 .mcb:hover{background:rgba(63,200,245,.1);border-color:var(--ac);color:var(--ac)}
@@ -294,7 +311,7 @@ input[type=range]{flex:1;accent-color:var(--ac);cursor:pointer;height:14px}
     <div class="hv"><div class="hnum red" id="h-rw">0</div><div class="hlbl">Победы</div></div><div class="hs"></div>
     <div class="hv"><div class="hnum red" id="h-rl">0</div><div class="hlbl">Пораж.</div></div>
   </div>
-  <div class="hc"><div class="hct">Республика Краснорусь</div><div class="hcm">КАМПАНИЯ</div><div class="hcd" id="h-day">ДЕНЬ 1</div></div>
+  <div class="hc"><div class="hcm">РЕСПУБЛИКА КРАСНОРУСЬ</div><div class="hcd" id="h-day">КАМПАНИЯ</div></div>
   <div class="hf blue">
     <div class="hv"><div class="hnum blue" id="h-bl">0</div><div class="hlbl">Пораж.</div></div><div class="hs"></div>
     <div class="hv"><div class="hnum blue" id="h-bw">0</div><div class="hlbl">Победы</div></div><div class="hs"></div>
@@ -363,10 +380,11 @@ input[type=range]{flex:1;accent-color:var(--ac);cursor:pointer;height:14px}
         </div>
         <button class="bxs c" style="width:100%;margin-bottom:5px" onclick="copyViewLink()">🔗 Ссылка для просмотра</button>
         <button class="bxs" style="width:100%;margin-bottom:5px;border-color:rgba(245,166,35,.3);color:rgba(245,166,35,.8)" onclick="document.getElementById('m-fb').classList.add('open')">🌐 Сетевой режим (Firebase)</button>
-        <div style="display:flex;gap:4px">
+        <div style="display:flex;gap:4px;margin-bottom:5px">
           <button class="bxs" style="flex:1" onclick="resetNP()">↺ Позиции</button>
           <button class="bxs" style="flex:1" onclick="resetEdges()">↺ Линии</button>
         </div>
+        <button class="bgo" onclick="manualSave()" style="margin-top:0">💾 СОХРАНИТЬ</button>
         <input type="file" id="imp" accept=".json" style="display:none" onchange="doImp(this)">
       </div></div>
     </div>
@@ -484,12 +502,33 @@ input[type=range]{flex:1;accent-color:var(--ac);cursor:pointer;height:14px}
 <div class="mbg" id="m-sed">
   <div class="mbox" style="max-width:520px"><div class="mstr camp"></div>
     <div class="mhd"><div class="mttl" id="sed-ttl">Редактор сектора</div><div class="msub">Правый клик по сектору на карте для открытия</div></div>
-    <div class="mbod" style="max-height:70vh;overflow-y:auto">
-      <div class="frow"><label class="fl">Название (RU)</label><input class="finp" id="sed-ru" placeholder="Название на русском"></div>
-      <div class="frow"><label class="fl">Описание</label><textarea class="finp" id="sed-desc" rows="2" style="resize:vertical;font-family:inherit"></textarea></div>
-      <div class="frow"><label class="fl">📋 Текст миссии</label><textarea class="finp" id="sed-miss" rows="3" style="resize:vertical;font-family:inherit" placeholder="Оставь пустым если нет специальной миссии"></textarea></div>
-      <div class="frow"><label class="fl">⚔ После захвата — Краснорусь (КРА)</label><textarea class="finp" id="sed-cr" rows="2" style="resize:vertical;font-family:inherit"></textarea></div>
-      <div class="frow"><label class="fl">⚔ После захвата — ССА</label><textarea class="finp" id="sed-cb" rows="2" style="resize:vertical;font-family:inherit"></textarea></div>
+    <div class="mbod" style="max-height:72vh;overflow-y:auto;padding:16px 18px">
+      <div class="sed-field">
+        <div class="sed-label">Название сектора</div>
+        <input class="sed-input" id="sed-ru" placeholder="Название на русском">
+      </div>
+      <div class="sed-field">
+        <div class="sed-label">Краткое описание</div>
+        <textarea class="sed-textarea" id="sed-desc" rows="2" placeholder="Тактическая характеристика территории..."></textarea>
+      </div>
+      <div class="sed-field">
+        <div class="sed-label">📋 Специальная миссия</div>
+        <div class="sed-section">
+          <textarea class="sed-textarea" id="sed-miss" rows="3" placeholder="Оставь пустым если нет особой миссии для этого сектора..."></textarea>
+        </div>
+      </div>
+      <div class="sed-field">
+        <div class="sed-label" style="color:var(--RL)">⚔ После захвата — Краснорусь</div>
+        <div class="sed-section red-sec">
+          <textarea class="sed-textarea" id="sed-cr" rows="2" placeholder="Результат захвата правительственными войсками..."></textarea>
+        </div>
+      </div>
+      <div class="sed-field">
+        <div class="sed-label" style="color:var(--BL)">⚔ После захвата — ССА</div>
+        <div class="sed-section blue-sec">
+          <textarea class="sed-textarea" id="sed-cb" rows="2" placeholder="Результат захвата силами сепаратистов..."></textarea>
+        </div>
+      </div>
     </div>
     <div class="mft"><button class="mbtn cancel" onclick="closeM('m-sed')">Отмена</button><button class="mbtn ok" onclick="saveSectorEdit()">Сохранить</button></div>
   </div>
@@ -529,6 +568,45 @@ input[type=range]{flex:1;accent-color:var(--ac);cursor:pointer;height:14px}
       <button class="mbtn cancel" onclick="closeM('m-fb')">Закрыть</button>
       <button class="mbtn ok" onclick="fbConnect()">🔌 Подключить</button>
       <button class="mbtn rst" onclick="fbDisconnect()">Отключить</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: SET NEUTRAL -->
+<div class="mbg" id="m-neut">
+  <div class="mbox" style="max-width:380px"><div class="mstr" style="background:rgba(74,94,110,.7)"></div>
+    <div class="mhd"><div class="mttl">Нейтральный статус</div><div class="msub">Сектор будет переведён в нейтральное состояние без записи боя</div></div>
+    <div style="padding:14px 18px;text-align:center">
+      <div style="font-size:10px;letter-spacing:2px;color:var(--t2);text-transform:uppercase;margin-bottom:8px">Сектор</div>
+      <div id="neut-name" style="font-size:18px;font-weight:700;color:var(--t1);letter-spacing:2px;margin-bottom:12px"></div>
+      <div style="font-size:11px;color:var(--t2);line-height:1.6">Статистика боёв сохранится.<br>Только владелец изменится на нейтральный.</div>
+    </div>
+    <div class="mft">
+      <button class="mbtn cancel" onclick="closeM('m-neut')">Отмена</button>
+      <button class="mbtn ok" style="border-color:rgba(74,94,110,.6);color:#8aabbc" onclick="confirmNeutral()">⬜ Сделать нейтральным</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: EDGE CONFIRM -->
+<div class="mbg" id="m-edge">
+  <div class="mbox" style="max-width:380px"><div class="mstr" style="background:rgba(245,166,35,.8)"></div>
+    <div class="mhd"><div class="mttl" id="med-ttl">Соединение секторов</div><div class="msub" id="med-sub"></div></div>
+    <div style="padding:16px 18px;display:flex;align-items:center;gap:14px">
+      <div style="flex:1;text-align:center">
+        <div style="font-size:10px;letter-spacing:2px;color:var(--t2);text-transform:uppercase;margin-bottom:4px">Сектор A</div>
+        <div id="med-a" style="font-size:14px;font-weight:700;color:var(--ac);letter-spacing:1px"></div>
+      </div>
+      <div style="font-size:20px;color:rgba(245,166,35,.7)">↔</div>
+      <div style="flex:1;text-align:center">
+        <div style="font-size:10px;letter-spacing:2px;color:var(--t2);text-transform:uppercase;margin-bottom:4px">Сектор Б</div>
+        <div id="med-b" style="font-size:14px;font-weight:700;color:var(--ac);letter-spacing:1px"></div>
+      </div>
+    </div>
+    <div class="mft">
+      <button class="mbtn cancel" onclick="closeM('m-edge');connectFirst=null;">Отмена</button>
+      <button class="mbtn rst" id="med-del" style="display:none" onclick="confirmEdgeDel()">Удалить линию</button>
+      <button class="mbtn ok" id="med-add" onclick="confirmEdgeAdd()">Добавить линию</button>
     </div>
   </div>
 </div>
@@ -914,9 +992,9 @@ function drawFrame(t){
 /* ═══════════════════════════════════════════════
    MOUSE
 ═══════════════════════════════════════════════ */
-let hovId=null,dragMode=false,dragNode=null,panning=false,panSt={x:0,y:0},mdPos={x:0,y:0},didDrag=false;
-let connectFirst=null; // first node selected for edge creation
-let hovEdge=null;      // hovered edge index for deletion
+let hovId=null,dragMode=false,dragNode=null,pendingDragNode=null,panning=false,panSt={x:0,y:0},mdPos={x:0,y:0},didDrag=false;
+let connectFirst=null;
+let hovEdge=null;
 
 function edgeKey(a,b){return[a,b].sort().join('|');}
 function hasEdge(a,b){const k=edgeKey(a,b);return activeEdges.findIndex(e=>edgeKey(e[0],e[1])===k);}
@@ -925,6 +1003,41 @@ function toggleEdge(a,b){
   if(idx>=0){activeEdges.splice(idx,1);notify(`Линия удалена: ${a} ↔ ${b}`,'ni');}
   else{activeEdges.push([a,b]);notify(`Линия добавлена: ${a} ↔ ${b}`,'nw');}
   saveAll();
+}
+function openEdgeConfirm(idA,idB){
+  const ma=MAPS.find(m=>m.id===idA)?.ru||idA;
+  const mb=MAPS.find(m=>m.id===idB)?.ru||idB;
+  const exists=hasEdge(idA,idB)>=0;
+  document.getElementById('med-ttl').textContent=exists?'Удалить соединение?':'Добавить соединение?';
+  document.getElementById('med-sub').textContent=exists?'Линия уже существует — удалить её?':'Создать линию между секторами?';
+  document.getElementById('med-a').textContent=ma;
+  document.getElementById('med-b').textContent=mb;
+  document.getElementById('med-add').style.display=exists?'none':'';
+  document.getElementById('med-del').style.display=exists?'':'none';
+  window._edgePair=[idA,idB];
+  document.getElementById('m-edge').classList.add('open');
+}
+function confirmEdgeAdd(){
+  if(!window._edgePair)return;
+  const[a,b]=window._edgePair;
+  if(hasEdge(a,b)<0)activeEdges.push([a,b]);
+  saveAll();
+  const ma=MAPS.find(m=>m.id===a)?.ru||a;
+  const mb=MAPS.find(m=>m.id===b)?.ru||b;
+  notify('Линия добавлена: '+ma+' ↔ '+mb,'nw');
+  window._edgePair=null;closeM('m-edge');
+}
+function confirmEdgeDel(){
+  if(window._edgeDelIdx!=null&&window._edgeDelIdx>=0){
+    activeEdges.splice(window._edgeDelIdx,1);
+    hovEdge=null;saveAll();notify('Линия удалена','nl');
+    window._edgeDelIdx=null;
+  } else if(window._edgePair){
+    const idx=hasEdge(window._edgePair[0],window._edgePair[1]);
+    if(idx>=0){activeEdges.splice(idx,1);saveAll();notify('Линия удалена','nl');}
+    window._edgePair=null;
+  }
+  closeM('m-edge');
 }
 
 // Returns index of edge whose midpoint is within ~12px of screen pos
@@ -946,6 +1059,7 @@ function getEdgeHit(sx,sy){
 }
 
 function toggleDragMode(){
+  if(VIEW){notify("Режим просмотра — редактирование недоступно","nl");return;}
   dragMode=!dragMode;
   if(!dragMode){connectFirst=null;hovEdge=null;}
   document.getElementById('dmb').classList.toggle('on',dragMode);
@@ -973,13 +1087,15 @@ cvs.addEventListener('mousedown',e=>{
   if(e.button!==0)return;
   mdPos={x:e.clientX,y:e.clientY};didDrag=false;
   const hit=getHit(e.clientX,e.clientY);
-  if(dragMode&&hit){dragNode=hit;cvs.style.cursor='grabbing';}
-  else if(!dragMode){panning=true;panSt={x:e.clientX-CAM.x,y:e.clientY-CAM.y};cvs.style.cursor='grabbing';}
+  if(dragMode&&hit){pendingDragNode=hit;cvs.style.cursor='grabbing';}
   else{panning=true;panSt={x:e.clientX-CAM.x,y:e.clientY-CAM.y};cvs.style.cursor='grabbing';}
 });
 
 cvs.addEventListener('mousemove',e=>{
   lastMouse={x:e.clientX,y:e.clientY};
+  if(pendingDragNode&&(Math.abs(e.clientX-mdPos.x)>5||Math.abs(e.clientY-mdPos.y)>5)){
+    dragNode=pendingDragNode;pendingDragNode=null;didDrag=true;
+  }
   if(dragNode){
     didDrag=true;
     const{x,y}=s2w(e.clientX,e.clientY);
@@ -1004,36 +1120,46 @@ cvs.addEventListener('mousemove',e=>{
 
 cvs.addEventListener('mouseup',e=>{
   if(dragNode){saveAll();dragNode=null;cvs.style.cursor='grab';}
+  else if(pendingDragNode){
+    // Click on node in dragMode (no drag movement) - connect logic
+    const hit=pendingDragNode;pendingDragNode=null;
+    if(!VIEW){
+      if(connectFirst===null){
+        connectFirst=hit;
+        const mn=MAPS.find(m=>m.id===hit)?.ru||hit;
+        notify('✥ Выбран: '+mn+' — кликни второй сектор','ni');
+      } else if(connectFirst===hit){
+        connectFirst=null;
+        notify('Выбор отменён','ni');
+      } else {
+        openEdgeConfirm(connectFirst,hit);
+        connectFirst=null;
+      }
+    }
+    cvs.style.cursor='grab';
+  }
   else if(panning){
-    if(!didDrag){
+    if(!didDrag&&!VIEW){
       const hit=getHit(e.clientX,e.clientY);
       if(dragMode){
-        // Edge/node editing mode click
-        if(hit){
-          // Node click: connect mode
-          if(connectFirst===null){
-            connectFirst=hit;
-            notify(`Выбран: ${MAPS.find(m=>m.id===hit)?.ru||hit}. Кликни второй сектор для линии.`,'ni');
-          } else if(connectFirst===hit){
-            connectFirst=null;
-            notify('Выбор отменён','ni');
-          } else {
-            toggleEdge(connectFirst,hit);
-            connectFirst=null;
-          }
-        } else {
-          // Edge click or empty click
+        // Empty area click in dragMode - check edge hit
+        if(!hit){
           const ei=getEdgeHit(e.clientX,e.clientY);
           if(ei>=0){
             const[a,b]=activeEdges[ei];
-            activeEdges.splice(ei,1);
-            hovEdge=null;saveAll();
-            notify(`Линия удалена: ${a} ↔ ${b}`,'nl');
-          } else {
-            connectFirst=null;
-          }
+            const ma=MAPS.find(m=>m.id===a)?.ru||a;
+            const mb=MAPS.find(m=>m.id===b)?.ru||b;
+            document.getElementById('med-ttl').textContent='Удалить соединение?';
+            document.getElementById('med-sub').textContent='Линия между секторами будет удалена';
+            document.getElementById('med-a').textContent=ma;
+            document.getElementById('med-b').textContent=mb;
+            document.getElementById('med-add').style.display='none';
+            document.getElementById('med-del').style.display='';
+            window._edgeDelIdx=ei;
+            document.getElementById('m-edge').classList.add('open');
+          } else { connectFirst=null; }
         }
-      } else if(!VIEW){
+      } else {
         if(hit)openRecM(hit);
       }
     }
@@ -1048,7 +1174,7 @@ cvs.addEventListener('contextmenu',e=>{
   if(hit)openSectorEditor(hit);
 });
 
-cvs.addEventListener('mouseleave',()=>{panning=false;dragNode=null;hovId=null;hovEdge=null;hideTT();});
+cvs.addEventListener('mouseleave',()=>{panning=false;dragNode=null;pendingDragNode=null;hovId=null;hovEdge=null;hideTT();});
 
 /* ═══════════════════════════════════════════════
    TOOLTIP
@@ -1390,6 +1516,38 @@ function resetEdges(){
 }
 
 /* ═══════════════════════════════════════════════
+   NEUTRAL SECTOR + MANUAL SAVE
+═══════════════════════════════════════════════ */
+let _neutId=null;
+function openNeutralModal(id){
+  _neutId=id;
+  const map=MAPS.find(m=>m.id===id);
+  document.getElementById('neut-name').textContent=map?map.ru:id;
+  document.getElementById('m-neut').classList.add('open');
+}
+function confirmNeutral(){
+  if(!_neutId)return;
+  const s=S.sectors[_neutId];
+  const prev=s.owner;
+  if(prev!=='neutral'){TR[_neutId]={t:0,from:prev,to:'neutral'};PR[_neutId].v=0.5;}
+  s.owner='neutral';
+  saveAll();renderAll();
+  const map=MAPS.find(m=>m.id===_neutId);
+  notify((map?map.ru:_neutId)+' — нейтральный','ni');
+  _neutId=null;closeM('m-neut');
+}
+function openNeutralAll(){
+  if(!confirm('Сбросить всех владельцев в нейтральные? Статистика боёв сохранится.'))return;
+  MAPS.forEach(m=>{
+    const s=S.sectors[m.id];
+    if(s.owner!=='neutral'){TR[m.id]={t:0,from:s.owner,to:'neutral'};}
+    s.owner='neutral';
+  });
+  saveAll();renderAll();notify('Все секторы нейтральны','ni');
+}
+function manualSave(){saveAll();notify('Данные сохранены','nw');}
+
+/* ═══════════════════════════════════════════════
    FIREBASE SYNC
 ═══════════════════════════════════════════════ */
 let FB_URL=null,FB_POLL=null,FB_CONNECTED=false;
@@ -1481,7 +1639,7 @@ function renderAll(){
   document.getElementById('h-rs').textContent=rs;document.getElementById('h-bs').textContent=bs;
   document.getElementById('h-rw').textContent=rS.w;document.getElementById('h-rl').textContent=rS.l;
   document.getElementById('h-bw').textContent=bS.w;document.getElementById('h-bl').textContent=bS.l;
-  document.getElementById('h-day').textContent=`ДЕНЬ ${S.day}`;
+  document.getElementById('h-day').textContent='КАМПАНИЯ';
   document.getElementById('fl-r').style.width=(rs/total*100)+'%';
   document.getElementById('fl-b').style.width=(bs/total*100)+'%';
   const fm=document.getElementById('f-map'),pvm=fm.value;
@@ -1502,7 +1660,7 @@ function renderAll(){
   MAPS.forEach(m=>{
     const s=S.sectors[m.id];
     const r=document.createElement('div');r.className=`srow ${s.owner}`;
-    r.innerHTML=`<span class="srn">${m.ru}</span><span class="srs w">W${s.wins}</span><span class="srs l">L${s.losses}</span>`;
+    r.innerHTML=`<span class="srn">${m.ru}</span><span class="srs w">W${s.wins}</span><span class="srs l">L${s.losses}</span>${!VIEW&&s.owner!=='neutral'?'<button class="srn-btn" onclick="event.stopPropagation();openNeutralModal(\''+m.id+'\')" title="Нейтральный">⬜</button>':''}`;
     if(!VIEW){r.onclick=()=>openRecM(m.id);r.addEventListener('mouseenter',()=>r.style.background='rgba(255,255,255,.04)');r.addEventListener('mouseleave',()=>r.style.background='');}
     sl.appendChild(r);
   });
