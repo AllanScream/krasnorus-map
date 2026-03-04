@@ -48,6 +48,23 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9000;
 
 .srn-btn{background:none;border:none;color:#6a8a9e;cursor:pointer;font-size:10px;padding:0 2px;opacity:.7;transition:opacity .15s}
 .srn-btn:hover{opacity:1;color:#8aabbc}
+.ou-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(10,20,36,.6);border:1px solid var(--b1);margin-bottom:5px;border-radius:2px}
+.ou-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.ou-dot.live{background:#3dcc7a;box-shadow:0 0 5px #3dcc7a}
+.ou-dot.idle{background:#f5a623}
+.ou-dot.old{background:#556677}
+.ou-name{flex:1;font-size:12px;font-weight:600;letter-spacing:1px}
+.ou-badge{font-size:8px;letter-spacing:2px;padding:2px 6px;text-transform:uppercase;border-radius:1px;font-weight:700;cursor:default}
+.ou-badge.admin{background:rgba(212,42,32,.15);color:var(--RL);border:1px solid rgba(212,42,32,.3)}
+.ou-badge.viewer{background:rgba(63,200,245,.1);color:var(--ac);border:1px solid rgba(63,200,245,.25)}
+.ou-badge.banned{background:rgba(80,80,80,.2);color:#556677;border:1px solid rgba(80,80,80,.3);text-decoration:line-through}
+.ou-actions{display:flex;gap:4px}
+.ou-btn{font-size:9px;letter-spacing:1px;padding:3px 7px;border:1px solid var(--b1);background:transparent;
+  color:var(--t2);cursor:pointer;font-family:'Rajdhani',sans-serif;text-transform:uppercase;transition:all .15s;border-radius:1px}
+.ou-btn:hover{border-color:var(--b2);color:var(--t1)}
+.ou-btn.kick:hover{border-color:var(--RL);color:var(--RL)}
+.ou-btn.unban:hover{border-color:var(--W);color:var(--W)}
+.srn-btn:hover{opacity:1;color:#8aabbc}
 /* VIEW BANNER */
 #vbanner{position:fixed;top:0;left:0;right:0;height:0;z-index:50;overflow:hidden;
   background:linear-gradient(90deg,rgba(212,42,32,.6),rgba(23,104,196,.6));
@@ -69,6 +86,10 @@ body.vm #pl{display:none}
 .hf.blue{justify-content:flex-end;border-left:1px solid rgba(23,104,196,.2)}
 .hn{font-size:14px;font-weight:700;letter-spacing:3px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px}
 .hn.red{color:var(--RL);text-shadow:0 0 14px var(--RG)}.hn.blue{color:var(--BL);text-shadow:0 0 14px var(--BG)}
+.hfact-btn{background:none;border:none;cursor:pointer;padding:2px 6px;border-radius:2px;transition:background .15s;font-family:'Rajdhani',sans-serif}
+.hfact-btn:hover{background:rgba(255,255,255,.06)}
+.hfact-btn.red:hover{background:rgba(212,42,32,.1)}.hfact-btn.blue:hover{background:rgba(23,104,196,.1)}
+#ver-tag{font-size:8px;letter-spacing:1.5px;color:rgba(174,200,224,.22);font-family:'Share Tech Mono',monospace;pointer-events:none;user-select:none;flex-shrink:0}
 .hs{width:1px;height:26px;background:var(--b1);flex-shrink:0}
 .hv{text-align:center;flex-shrink:0}
 .hnum{font-family:'Share Tech Mono',monospace;font-size:20px;line-height:1}
@@ -307,7 +328,7 @@ input[type=range]{flex:1;accent-color:var(--ac);cursor:pointer;height:14px}
 <!-- HUD -->
 <div id="hud">
   <div class="hf red">
-    <div class="hn red" id="h-rn">КРАСНОРУСЬ</div><div class="hs"></div>
+    <button class="hn red hfact-btn" id="h-rn" onclick="openFactionPopup('red')" title="Состав — ВС КР">ВС КР</button><div class="hs"></div>
     <div class="hv"><div class="hnum red" id="h-rs">0</div><div class="hlbl">Секторов</div></div><div class="hs"></div>
     <div class="hv"><div class="hnum red" id="h-rw">0</div><div class="hlbl">Победы</div></div><div class="hs"></div>
     <div class="hv"><div class="hnum red" id="h-rl">0</div><div class="hlbl">Пораж.</div></div>
@@ -317,7 +338,7 @@ input[type=range]{flex:1;accent-color:var(--ac);cursor:pointer;height:14px}
     <div class="hv"><div class="hnum blue" id="h-bl">0</div><div class="hlbl">Пораж.</div></div><div class="hs"></div>
     <div class="hv"><div class="hnum blue" id="h-bw">0</div><div class="hlbl">Победы</div></div><div class="hs"></div>
     <div class="hv"><div class="hnum blue" id="h-bs">0</div><div class="hlbl">Секторов</div></div><div class="hs"></div>
-    <div class="hn blue" id="h-bn">СЕПАРАТИСТЫ</div>
+    <button class="hn blue hfact-btn" id="h-bn" onclick="openFactionPopup('blue')" title="Состав — ССА">СИЛЫ ССА</button>
   </div>
 </div>
 <div id="flw"><div id="fl-r"></div><div id="fl-b"></div></div>
@@ -385,6 +406,8 @@ input[type=range]{flex:1;accent-color:var(--ac);cursor:pointer;height:14px}
           <button class="bxs" style="flex:1" onclick="resetNP()">↺ Позиции</button>
           <button class="bxs" style="flex:1" onclick="resetEdges()">↺ Линии</button>
         </div>
+        <button class="bxs" style="width:100%;margin-bottom:5px;border-color:rgba(63,200,245,.3);color:var(--ac)" onclick="openOnlinePanel()">👥 Онлайн игроки</button>
+        <button class="bxs" style="width:100%;margin-bottom:5px;border-color:rgba(61,204,122,.3);color:var(--W)" onclick="exportImage()">📷 Снимок карты (PNG)</button>
         <button class="bgo" onclick="manualSave()" style="margin-top:0">💾 СОХРАНИТЬ</button>
         <input type="file" id="imp" accept=".json" style="display:none" onchange="doImp(this)">
       </div></div>
@@ -406,6 +429,7 @@ input[type=range]{flex:1;accent-color:var(--ac);cursor:pointer;height:14px}
 <div id="nbar">
   <div id="nhist"><div id="nhi"></div></div>
   <div id="ntick" onclick="tgNews()">
+    <span id="ver-tag">V.0.0.0.8</span>
     <span class="ntag neutral" id="ntag">СВОДКА</span>
     <span id="ntxt">Ожидание данных с фронта...</span>
     <button id="nexp">▲ ИСТОРИЯ</button>
@@ -613,6 +637,37 @@ input[type=range]{flex:1;accent-color:var(--ac);cursor:pointer;height:14px}
   </div>
 </div>
 
+
+<!-- MODAL: ONLINE USERS -->
+<div class="mbg" id="m-online">
+  <div class="mbox" style="max-width:480px"><div class="mstr" style="background:linear-gradient(90deg,var(--ac),rgba(63,200,245,.2))"></div>
+    <div class="mhd">
+      <div class="mttl">👥 Онлайн сейчас</div>
+      <div class="msub" id="online-sub">Игроки подключённые к Firebase в данный момент</div>
+    </div>
+    <div class="mbod" style="max-height:55vh;overflow-y:auto;padding:10px 14px">
+      <div id="online-list"><div style="text-align:center;color:var(--t2);font-size:12px;padding:20px 0">Загрузка...</div></div>
+    </div>
+    <div class="mft">
+      <button class="mbtn cancel" onclick="closeM('m-online')">Закрыть</button>
+      <button class="mbtn ok" onclick="refreshOnline()">↻ Обновить</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: FACTION POPUP -->
+<div class="mbg" id="m-fact">
+  <div class="mbox" style="max-width:380px">
+    <div class="mstr" id="fact-str"></div>
+    <div class="mhd">
+      <div class="mttl" id="fact-ttl"></div>
+      <div class="msub" id="fact-sub"></div>
+    </div>
+    <div class="mbod" id="fact-body"></div>
+    <div class="mft"><button class="mbtn cancel" onclick="closeM('m-fact')">Закрыть</button></div>
+  </div>
+</div>
+
 <!-- MODAL: RESET -->
 <div class="mbg" id="m-rst">
   <div class="mbox"><div class="mstr red"></div>
@@ -734,7 +789,7 @@ const DPOS={
 ═══════════════════════════════════════════════ */
 let S={
   day:1,
-  players:[{id:'p1',name:'Игрок 1',faction:'red'},{id:'p2',name:'Игрок 2',faction:'blue'}],
+  players:[{id:'p1',name:'ВС КР',faction:'red'},{id:'p2',name:'Силы ССА',faction:'blue'}],
   sectors:{},log:[],news:[],
 };
 MAPS.forEach(m=>S.sectors[m.id]={owner:'neutral',wins:0,losses:0,lastResult:null,lastPlayer:null,battles:[]});
@@ -759,8 +814,8 @@ function saveAll(){
     });
     localStorage.setItem('ba6_col',JSON.stringify(col));
   }catch(e){}
-  // Push to Firebase if connected
-  if(typeof FB_CONNECTED!=='undefined'&&FB_CONNECTED)fbPush().catch(()=>{});
+  // Push to Firebase with debounce (300ms) to avoid spamming on rapid changes
+  if(typeof FB_CONNECTED!=='undefined'&&FB_CONNECTED)fbPushDebounced();
 }
 
 function loadAll(){
@@ -779,7 +834,7 @@ function loadAll(){
     const rn=localStorage.getItem('ba6_np');
     NP=rn?JSON.parse(rn):{};
   }catch(e){NP={};}
-  MAPS.forEach(m=>{if(!NP[m.id])NP[m.id]={...DPOS[m.id]};});
+  MAPS.forEach(m=>{if(!NP[m.id])NP[m.id]={...DPOS[m.id]};});rebuildEdgeSet();
   try{
     const re=localStorage.getItem('ba6_edges');
     if(re)activeEdges=JSON.parse(re);
@@ -999,12 +1054,15 @@ let connectFirst=null;
 let hovEdge=null;
 
 function edgeKey(a,b){return[a,b].sort().join('|');}
-function hasEdge(a,b){const k=edgeKey(a,b);return activeEdges.findIndex(e=>edgeKey(e[0],e[1])===k);}
+/* Optimization: edgeSet mirrors activeEdges for O(1) lookup */
+let edgeSet=new Set();
+function rebuildEdgeSet(){edgeSet=new Set(activeEdges.map(([a,b])=>edgeKey(a,b)));}
+function hasEdge(a,b){return edgeSet.has(edgeKey(a,b))?activeEdges.findIndex(e=>edgeKey(e[0],e[1])===edgeKey(a,b)):-1;}
 function toggleEdge(a,b){
   const idx=hasEdge(a,b);
   if(idx>=0){activeEdges.splice(idx,1);notify(`Линия удалена: ${a} ↔ ${b}`,'ni');}
   else{activeEdges.push([a,b]);notify(`Линия добавлена: ${a} ↔ ${b}`,'nw');}
-  saveAll();
+  rebuildEdgeSet();saveAll();
 }
 function openEdgeConfirm(idA,idB){
   const ma=MAPS.find(m=>m.id===idA)?.ru||idA;
@@ -1523,7 +1581,7 @@ function loadCustomMaps(){
 ═══════════════════════════════════════════════ */
 function resetEdges(){
   activeEdges=DEFAULT_EDGES.map(e=>[...e]);
-  saveAll();notify('Линии сброшены','ni');
+  rebuildEdgeSet();saveAll();notify('Линии сброшены','ni');
 }
 
 /* ═══════════════════════════════════════════════
@@ -1603,6 +1661,12 @@ function fbDisconnect(){
   notify('Firebase отключён','ni');
 }
 
+/* Optimization: debounce prevents rapid consecutive pushes (e.g. sector drag) */
+let _fbPushTimer=null;
+function fbPushDebounced(){
+  if(_fbPushTimer)clearTimeout(_fbPushTimer);
+  _fbPushTimer=setTimeout(()=>fbPush().catch(()=>{}),300);
+}
 async function fbPush(){
   if(!FB_URL)return;
   const payload={day:S.day,players:S.players,sectors:S.sectors,log:S.log.slice(0,50),news:S.news.slice(0,30),nodePos:NP,edges:activeEdges};
@@ -1626,7 +1690,7 @@ async function fbPull(){
     if(d.news)S.news=d.news;
     if(d.sectors)MAPS.forEach(m=>{if(d.sectors[m.id])S.sectors[m.id]={...S.sectors[m.id],...d.sectors[m.id]};});
     if(d.nodePos)Object.assign(NP,d.nodePos);
-    if(d.edges)activeEdges=d.edges;
+    if(d.edges){activeEdges=d.edges;rebuildEdgeSet();}
     renderAll();renderLog();renderNews();
   }catch(e){}
 }
@@ -1637,19 +1701,203 @@ function copyFBLink(){
   navigator.clipboard.writeText(url).then(()=>notify('🔗 Ссылка скопирована','ni')).catch(()=>prompt('Ссылка просмотра:',url));
 }
 
+/* Optimization: single pass to build playerStats map — O(sectors×battles) instead of O(players×sectors×battles) */
+function _buildStats(){
+  const ps={},fs={red:{w:0,l:0},blue:{w:0,l:0},neutral:{w:0,l:0}};
+  const pidToFaction={};
+  S.players.forEach(p=>{pidToFaction[p.id]=p.faction;ps[p.id]={w:0,l:0};});
+  Object.values(S.sectors).forEach(s=>s.battles.forEach(b=>{
+    if(ps[b.player]){
+      b.result==='win'?ps[b.player].w++:ps[b.player].l++;
+      const fac=pidToFaction[b.player]||'neutral';
+      b.result==='win'?fs[fac].w++:fs[fac].l++;
+    }
+  }));
+  return{ps,fs};
+}
+
+
+/* ═══════════════════════════════════════════════
+   PRESENCE SYSTEM (Firebase-based)
+   Each client registers uid in /presence/{uid}.json
+   Admin can ban/limit via /banned/{uid}.json
+═══════════════════════════════════════════════ */
+const SESSION_UID=(()=>{
+  let u=sessionStorage.getItem('ba6_uid');
+  if(!u){u='uid_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);sessionStorage.setItem('ba6_uid',u);}
+  return u;
+})();
+let PRESENCE_TIMER=null;
+
+function presenceStart(){
+  if(!FB_URL)return;
+  presencePing();
+  if(PRESENCE_TIMER)clearInterval(PRESENCE_TIMER);
+  PRESENCE_TIMER=setInterval(presencePing,15000);
+}
+async function presencePing(){
+  if(!FB_URL)return;
+  const data={uid:SESSION_UID,mode:VIEW?'viewer':'admin',ts:Date.now(),
+    ua:navigator.userAgent.slice(0,60)};
+  try{await fetch(`${FB_URL}/presence/${SESSION_UID}.json`,
+    {method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});}catch(e){}
+  // Check if we've been banned or limited
+  try{
+    const r=await fetch(`${FB_URL}/banned/${SESSION_UID}.json`);
+    const d=await r.json();
+    if(d===true&&!VIEW){
+      alert('Администратор ограничил ваш доступ. Переключаю в режим просмотра.');
+      window.location.href=location.href.split('?')[0]+'?view=1'+(FB_URL?'&fb='+encodeURIComponent(FB_URL):'');
+    }
+  }catch(e){}
+}
+
+async function refreshOnline(){
+  document.getElementById('online-list').innerHTML='<div style="text-align:center;color:var(--t2);font-size:12px;padding:12px 0">Загрузка...</div>';
+  if(!FB_URL){
+    document.getElementById('online-sub').textContent='Firebase не подключён — данные недоступны';
+    document.getElementById('online-list').innerHTML='<div style="text-align:center;color:var(--t2);font-size:12px;padding:20px 0">⚠ Подключите Firebase в Сетевом режиме</div>';
+    return;
+  }
+  try{
+    const[presR,banR]=await Promise.all([
+      fetch(`${FB_URL}/presence.json`),
+      fetch(`${FB_URL}/banned.json`)
+    ]);
+    const presence=presR.ok?await presR.json():{};
+    const banned=banR.ok?await banR.json():{};
+    const now=Date.now();
+    const entries=Object.values(presence||{});
+    const alive=entries.filter(e=>now-e.ts<60000);
+    document.getElementById('online-sub').textContent=`Активных: ${alive.length} · обновлено ${new Date().toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'})}`;
+    if(!entries.length){
+      document.getElementById('online-list').innerHTML='<div style="text-align:center;color:var(--t2);font-size:12px;padding:20px 0">Никто не подключён</div>';
+      return;
+    }
+    // Sort: alive first, then by ts desc
+    entries.sort((a,b)=>(now-a.ts)-(now-b.ts));
+    document.getElementById('online-list').innerHTML=entries.map(e=>{
+      const age=now-e.ts;
+      const dotCls=age<20000?'live':age<60000?'idle':'old';
+      const ageStr=age<5000?'только что':age<60000?`${~~(age/1000)}с назад`:`${~~(age/60000)}мин назад`;
+      const isBanned=banned&&banned[e.uid]===true;
+      const modeLabel=isBanned?'ЗАБЛОКИРОВАН':e.mode==='admin'?'ADMIN':'ЗРИТЕЛЬ';
+      const modeCls=isBanned?'banned':e.mode==='admin'?'admin':'viewer';
+      const isMe=e.uid===SESSION_UID;
+      const actions=isMe?'<span style="font-size:9px;color:var(--t2);letter-spacing:1px">← ВЫ</span>':(isBanned?
+        `<button class="ou-btn unban" onclick="onlineAction('unban','${e.uid}')">Разблокировать</button>`:
+        `<button class="ou-btn" onclick="onlineAction('viewer','${e.uid}')">→ Зритель</button><button class="ou-btn kick" onclick="onlineAction('kick','${e.uid}')">Блок</button>`
+      );
+      return `<div class="ou-row">
+        <div class="ou-dot ${dotCls}"></div>
+        <div class="ou-name">${e.mode==='admin'?'⚙':'👁'} ${e.uid.slice(0,12)}…<div style="font-size:9px;color:var(--t2);font-weight:400;letter-spacing:0">${ageStr}</div></div>
+        <span class="ou-badge ${modeCls}">${modeLabel}</span>
+        <div class="ou-actions">${actions}</div>
+      </div>`;
+    }).join('');
+  }catch(e){
+    document.getElementById('online-list').innerHTML=`<div style="text-align:center;color:var(--L);font-size:12px;padding:20px 0">Ошибка: ${e.message}</div>`;
+  }
+}
+
+async function onlineAction(action,uid){
+  if(!FB_URL)return;
+  if(action==='kick'){
+    await fetch(`${FB_URL}/banned/${uid}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:'true'});
+    notify('Игрок заблокирован','nl');
+  }else if(action==='unban'){
+    await fetch(`${FB_URL}/banned/${uid}.json`,{method:'DELETE'});
+    notify('Блокировка снята','nw');
+  }else if(action==='viewer'){
+    await fetch(`${FB_URL}/banned/${uid}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:'true'});
+    notify('Переведён в режим зрителя','ni');
+  }
+  refreshOnline();
+}
+
+function openOnlinePanel(){
+  document.getElementById('m-online').classList.add('open');
+  refreshOnline();
+}
+
+/* ═══════════════════════════════════════════════
+   EXPORT IMAGE — composite canvas snapshot
+═══════════════════════════════════════════════ */
+function exportImage(){
+  // Create an offscreen canvas combining hud info + map
+  const W=cvs.width,H=cvs.height;
+  const off=document.createElement('canvas');
+  off.width=W;off.height=H;
+  const ox=off.getContext('2d');
+
+  // Background
+  ox.fillStyle='#040912';
+  ox.fillRect(0,0,W,H);
+
+  // Grid overlay (subtle)
+  ox.strokeStyle='rgba(30,70,110,0.09)';ox.lineWidth=1;
+  for(let x=0;x<W;x+=56){ox.beginPath();ox.moveTo(x,0);ox.lineTo(x,H);ox.stroke();}
+  for(let y=0;y<H;y+=56){ox.beginPath();ox.moveTo(0,y);ox.lineTo(W,y);ox.stroke();}
+
+  // Copy map canvas
+  ox.drawImage(cvs,0,0);
+
+  // HUD bar at top
+  ox.fillStyle='rgba(4,9,18,0.97)';
+  ox.fillRect(0,0,W,58);
+  ox.strokeStyle='rgba(80,160,220,0.4)';ox.lineWidth=1;
+  ox.beginPath();ox.moveTo(0,58);ox.lineTo(W,58);ox.stroke();
+
+  // HUD text
+  ox.font='bold 13px Rajdhani,sans-serif';
+  ox.textAlign='left';
+  // Red side
+  const redPs=S.players.filter(p=>p.faction==='red').map(p=>p.name).join(' / ')||'ВС КР';
+  const bluPs=S.players.filter(p=>p.faction==='blue').map(p=>p.name).join(' / ')||'СИЛЫ ССА';
+  ox.fillStyle='#e84030';ox.fillText(redPs.toUpperCase(),14,22);
+  const secs=Object.values(S.sectors);
+  const rs=secs.filter(s=>s.owner==='red').length,bs=secs.filter(s=>s.owner==='blue').length;
+  ox.font='11px "Share Tech Mono",monospace';
+  ox.fillStyle='rgba(174,200,224,0.55)';ox.fillText(`Секторов: ${rs}`,14,38);
+
+  // Center
+  ox.textAlign='center';
+  ox.font='bold 12px Rajdhani,sans-serif';ox.fillStyle='#3fc8f5';
+  ox.fillText('РЕСПУБЛИКА КРАСНОРУСЬ',W/2,22);
+  ox.font='9px "Share Tech Mono",monospace';ox.fillStyle='rgba(174,200,224,0.45)';
+  ox.fillText('КАМПАНИЯ · ДЕНЬ '+S.day,W/2,38);
+
+  // Blue side
+  ox.textAlign='right';
+  ox.font='bold 13px Rajdhani,sans-serif';ox.fillStyle='#2a8be0';
+  ox.fillText(bluPs.toUpperCase(),W-14,22);
+  ox.font='11px "Share Tech Mono",monospace';ox.fillStyle='rgba(174,200,224,0.55)';
+  ox.fillText(`Секторов: ${bs}`,W-14,38);
+
+  // Version watermark
+  ox.textAlign='right';
+  ox.font='8px "Share Tech Mono",monospace';ox.fillStyle='rgba(174,200,224,0.15)';
+  ox.fillText('V.0.0.0.8 · Республика Краснорусь',W-8,H-6);
+
+  // Download
+  const a=document.createElement('a');
+  a.download=`krasnorus_день${S.day}_${new Date().toLocaleDateString('ru').replace(/\./g,'-')}.png`;
+  a.href=off.toDataURL('image/png');
+  a.click();
+  notify('📷 Снимок сохранён','nw');
+}
+
 function renderAll(){
   const secs=Object.values(S.sectors),total=MAPS.length;
   const rs=secs.filter(s=>s.owner==='red').length,bs=secs.filter(s=>s.owner==='blue').length;
-  const stats=f=>({
-    w:secs.reduce((a,s)=>a+s.battles.filter(b=>{const p=S.players.find(pp=>pp.id===b.player);return p&&p.faction===f&&b.result==='win';}).length,0),
-    l:secs.reduce((a,s)=>a+s.battles.filter(b=>{const p=S.players.find(pp=>pp.id===b.player);return p&&p.faction===f&&b.result==='loss';}).length,0),
-  });
-  const rS=stats('red'),bS=stats('blue');
-  document.getElementById('h-rn').textContent=S.players.filter(p=>p.faction==='red').map(p=>p.name).join(' / ')||'КРАСНОРУСЬ';
-  document.getElementById('h-bn').textContent=S.players.filter(p=>p.faction==='blue').map(p=>p.name).join(' / ')||'СЕПАРАТИСТЫ';
+  const{ps,fs}=_buildStats();
+  const redPlayers=S.players.filter(p=>p.faction==='red');
+  const bluePlayers=S.players.filter(p=>p.faction==='blue');
+  document.getElementById('h-rn').textContent='ВС КР'+(redPlayers.length?` (${redPlayers.length})`:'');
+  document.getElementById('h-bn').textContent='СИЛЫ ССА'+(bluePlayers.length?` (${bluePlayers.length})`:'');
   document.getElementById('h-rs').textContent=rs;document.getElementById('h-bs').textContent=bs;
-  document.getElementById('h-rw').textContent=rS.w;document.getElementById('h-rl').textContent=rS.l;
-  document.getElementById('h-bw').textContent=bS.w;document.getElementById('h-bl').textContent=bS.l;
+  document.getElementById('h-rw').textContent=fs.red.w;document.getElementById('h-rl').textContent=fs.red.l;
+  document.getElementById('h-bw').textContent=fs.blue.w;document.getElementById('h-bl').textContent=fs.blue.l;
   document.getElementById('h-day').textContent='КАМПАНИЯ';
   document.getElementById('fl-r').style.width=(rs/total*100)+'%';
   document.getElementById('fl-b').style.width=(bs/total*100)+'%';
@@ -1661,10 +1909,9 @@ function renderAll(){
   S.players.forEach(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=(p.faction==='red'?'🔴':p.faction==='blue'?'🔵':'⬜')+' '+p.name;if(p.id===pvp)o.selected=true;fp.appendChild(o);});
   const pm=document.getElementById('pmini');pm.innerHTML='';
   S.players.forEach(p=>{
-    const w=secs.reduce((a,s)=>a+s.battles.filter(b=>b.player===p.id&&b.result==='win').length,0);
-    const l=secs.reduce((a,s)=>a+s.battles.filter(b=>b.player===p.id&&b.result==='loss').length,0);
+    const st=ps[p.id]||{w:0,l:0};
     const d=document.createElement('div');d.className=`pmini ${p.faction}`;
-    d.innerHTML=`<span class="pmn">${p.name}</span><span class="pms w">W${w}</span><span class="pms l">L${l}</span>`;
+    d.innerHTML=`<span class="pmn">${p.name}</span><span class="pms w">W${st.w}</span><span class="pms l">L${st.l}</span>`;
     pm.appendChild(d);
   });
   const sl=document.getElementById('srows');sl.innerHTML='';
@@ -1702,6 +1949,35 @@ function tgP(side){
   const p=document.getElementById('p'+side),t=document.getElementById('t'+side);
   const o=!p.classList.contains('open');p.classList.toggle('open',o);t.classList.toggle('open',o);
 }
+
+function openFactionPopup(faction){
+  const isRed=faction==='red';
+  const isBlue=faction==='blue';
+  const color=isRed?'var(--RL)':isBlue?'var(--BL)':'var(--N)';
+  const name=isRed?'ВС Красноруси':isBlue?'Силы ССА':'Нейтральные';
+  const players=S.players.filter(p=>p.faction===faction);
+  document.getElementById('fact-str').style.background=isRed?'var(--RL)':isBlue?'var(--BL)':'var(--N)';
+  document.getElementById('fact-ttl').textContent=name;
+  document.getElementById('fact-sub').textContent='Игроки, выступающие за эту сторону';
+  const secs=Object.values(S.sectors);
+  const body=document.getElementById('fact-body');
+  if(!players.length){
+    body.innerHTML=`<div style="text-align:center;color:var(--t2);font-size:12px;padding:8px 0">Нет игроков в этой фракции</div>`;
+  }else{
+    body.innerHTML=players.map(p=>{
+      const w=secs.reduce((a,s)=>a+s.battles.filter(b=>b.player===p.id&&b.result==='win').length,0);
+      const l=secs.reduce((a,s)=>a+s.battles.filter(b=>b.player===p.id&&b.result==='loss').length,0);
+      const icon=p.faction==='red'?'🔴':p.faction==='blue'?'🔵':'⬜';
+      return `<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-left:3px solid ${color};background:rgba(10,20,36,.5);margin-bottom:6px">
+        <span style="font-size:16px">${icon}</span>
+        <span style="flex:1;font-size:14px;font-weight:700;letter-spacing:1px;color:var(--t1)">${p.name}</span>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--W)">W${w}</span>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--L)">L${l}</span>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('m-fact').classList.add('open');
+}
 function closeM(id){document.getElementById(id).classList.remove('open');}
 function openRst(){document.getElementById('m-rst').classList.add('open');}
 function doReset(){
@@ -1721,7 +1997,7 @@ function doImp(inp){
     try{
       const d=JSON.parse(e.target.result);
       if(d.state)S=d.state;else S=d;
-      if(d.nodePos){NP={...d.nodePos};MAPS.forEach(m=>{if(!NP[m.id])NP[m.id]={...DPOS[m.id]};});}
+      if(d.nodePos){NP={...d.nodePos};MAPS.forEach(m=>{if(!NP[m.id])NP[m.id]={...DPOS[m.id]};});rebuildEdgeSet();}
       if(d.edges)activeEdges=d.edges;
       saveAll();renderAll();renderLog();renderNews();notify('Данные загружены','nw');
     }catch{notify('Ошибка импорта','nl');}
@@ -1758,7 +2034,8 @@ loadCustomMaps();
       FB_CONNECTED=true;
       fbSetStatus('online','🟢 Подключено — синхронизация активна');
       FB_POLL=setInterval(fbPull,4000);
-      if(!VIEW)fbPush().catch(()=>{});
+      presenceStart();
+      if(!VIEW)fbPushDebounced();
     }).catch(()=>fbSetStatus('error','Ошибка подключения'));
   }
 })();
