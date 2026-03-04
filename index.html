@@ -158,9 +158,9 @@ select.fsel option{background:#060e1a}
 .bxs.c:hover{border-color:var(--ac);background:rgba(63,200,245,.08)}
 .pmini{display:flex;align-items:center;gap:6px;padding:6px 8px;background:rgba(10,20,36,.5);
   border-left:2px solid;margin-bottom:4px;font-size:12px}
-.pmini.red{border-color:var(--RL)}.pmini.blue{border-color:var(--BL)}
+.pmini.red{border-color:var(--RL)}.pmini.blue{border-color:var(--BL)}.pmini.neutral{border-color:var(--N)}
 .pmn{flex:1;font-weight:600;letter-spacing:1px}
-.pmini.red .pmn{color:var(--RL)}.pmini.blue .pmn{color:var(--BL)}
+.pmini.red .pmn{color:var(--RL)}.pmini.blue .pmn{color:var(--BL)}.pmini.neutral .pmn{color:#8aabbc}
 .pms{font-family:'Share Tech Mono',monospace;font-size:10px}
 .pms.w{color:var(--W)}.pms.l{color:var(--L)}
 .srow{display:flex;align-items:center;gap:5px;padding:4px 6px;border-left:2px solid;cursor:pointer;
@@ -259,6 +259,7 @@ select.fsel option{background:#060e1a}
 .pb{font-size:8px;letter-spacing:2px;font-weight:700;padding:3px 5px;text-transform:uppercase;cursor:pointer}
 .pb.red{background:var(--RD);color:var(--RL);border:1px solid rgba(212,42,32,.3)}
 .pb.blue{background:var(--BD);color:var(--BL);border:1px solid rgba(23,104,196,.3)}
+.pb.neu{background:rgba(74,94,110,.15);color:#8aabbc;border:1px solid rgba(74,94,110,.4)}
 .pi{flex:1;background:transparent;border:none;border-bottom:1px solid var(--b1);color:var(--t1);
   font-family:'Rajdhani',sans-serif;font-size:14px;padding:2px 4px;outline:none}
 .pi:focus{border-bottom-color:var(--b2)}
@@ -468,6 +469,7 @@ input[type=range]{flex:1;accent-color:var(--ac);cursor:pointer;height:14px}
       <div style="display:flex;gap:5px;margin-top:3px">
         <button class="badd" style="border-color:rgba(212,42,32,.3);color:rgba(212,42,32,.7)" onclick="addP('red')">+ Правительство</button>
         <button class="badd" style="border-color:rgba(23,104,196,.3);color:rgba(23,104,196,.7)" onclick="addP('blue')">+ Сепаратисты</button>
+        <button class="badd" style="border-color:rgba(74,94,110,.4);color:#8aabbc" onclick="addP('neutral')">+ Нейтральный</button>
       </div>
     </div>
     <div class="mft"><button class="mbtn cancel" onclick="closeM('m-sett')">Отмена</button><button class="mbtn ok" onclick="saveSett()">Сохранить</button></div>
@@ -1229,7 +1231,7 @@ function openRecM(id){
   document.getElementById('mr-sub').textContent=map.en+' — '+map.desc.slice(0,55)+'…';
   const sel=document.getElementById('mrp');
   sel.innerHTML='<option value="">— Выбери игрока —</option>';
-  S.players.forEach(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=(p.faction==='red'?'🔴 ':'🔵 ')+p.name;sel.appendChild(o);});
+  S.players.forEach(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=(p.faction==='red'?'🔴 ':p.faction==='blue'?'🔵 ':'⬜ ')+p.name;sel.appendChild(o);});
   ['mrw','mrl','mror','mrob','mron'].forEach(x=>document.getElementById(x).classList.remove('on'));
   document.getElementById('mrok').disabled=true;
   document.getElementById('m-rec').classList.add('open');
@@ -1430,12 +1432,20 @@ function openSett(){pedP=JSON.parse(JSON.stringify(S.players));renderPed();docum
 function renderPed(){
   const list=document.getElementById('ped');list.innerHTML='';
   pedP.forEach((p,i)=>{
+    const f=p.faction;
+    const label=f==='red'?'🔴 КРА':f==='blue'?'🔵 ССА':'⬜ НЕЙ';
+    const cls=f==='red'?'red':f==='blue'?'blue':'neu';
     const r=document.createElement('div');r.className='prow';
-    r.innerHTML=`<span class="pb ${p.faction}" onclick="flipF(${i})">${p.faction==='red'?'🔴 КРА':'🔵 ССА'}</span><input class="pi" value="${p.name}" placeholder="Имя игрока" oninput="pedP[${i}].name=this.value"><button class="pd" onclick="delP(${i})">✕</button>`;
+    r.innerHTML=`<span class="pb ${cls}" onclick="flipF(${i})" title="Сменить сторону">${label}</span><input class="pi" value="${p.name}" placeholder="Имя игрока" oninput="pedP[${i}].name=this.value"><button class="pd" onclick="delP(${i})">✕</button>`;
     list.appendChild(r);
   });
 }
-function flipF(i){pedP[i].faction=pedP[i].faction==='red'?'blue':'red';renderPed();}
+function flipF(i){
+  const order=['red','blue','neutral'];
+  const cur=pedP[i].faction;
+  pedP[i].faction=order[(order.indexOf(cur)+1)%3];
+  renderPed();
+}
 function delP(i){pedP.splice(i,1);renderPed();}
 function addP(f){pedP.push({id:'p'+Date.now(),name:'',faction:f});renderPed();}
 function saveSett(){
@@ -1461,7 +1471,8 @@ function tgSec(title){
    VIEW LINK
 ═══════════════════════════════════════════════ */
 function copyViewLink(){
-  const url=location.href.split('?')[0]+'?view=1';
+  const base=location.href.split('?')[0];
+  const url=FB_URL ? base+'?view=1&fb='+encodeURIComponent(FB_URL) : base+'?view=1';
   navigator.clipboard.writeText(url).then(()=>notify('🔗 Ссылка скопирована в буфер','ni'))
     .catch(()=>prompt('Ссылка для просмотра (только чтение):',url));
 }
@@ -1647,7 +1658,7 @@ function renderAll(){
   MAPS.forEach(m=>{const o=document.createElement('option');o.value=m.id;const ic=S.sectors[m.id].owner==='red'?'🔴':S.sectors[m.id].owner==='blue'?'🔵':'⬜';o.textContent=ic+' '+m.ru;if(m.id===pvm)o.selected=true;fm.appendChild(o);});
   const fp=document.getElementById('f-player'),pvp=fp.value;
   fp.innerHTML='<option value="">— Выбери игрока —</option>';
-  S.players.forEach(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=(p.faction==='red'?'🔴':'🔵')+' '+p.name;if(p.id===pvp)o.selected=true;fp.appendChild(o);});
+  S.players.forEach(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=(p.faction==='red'?'🔴':p.faction==='blue'?'🔵':'⬜')+' '+p.name;if(p.id===pvp)o.selected=true;fp.appendChild(o);});
   const pm=document.getElementById('pmini');pm.innerHTML='';
   S.players.forEach(p=>{
     const w=secs.reduce((a,s)=>a+s.battles.filter(b=>b.player===p.id&&b.result==='win').length,0);
