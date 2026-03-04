@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Broken Arrow — Республика Краснорусь</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23040912'/%3E%3Ccircle cx='16' cy='16' r='12' fill='none' stroke='%233fc8f5' stroke-width='1.5'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%233fc8f5' opacity='.8'/%3E%3Cline x1='16' y1='4' x2='16' y2='10' stroke='%233fc8f5' stroke-width='1.5'/%3E%3Cline x1='16' y1='22' x2='16' y2='28' stroke='%233fc8f5' stroke-width='1.5'/%3E%3Cline x1='4' y1='16' x2='10' y2='16' stroke='%233fc8f5' stroke-width='1.5'/%3E%3Cline x1='22' y1='16' x2='28' y2='16' stroke='%233fc8f5' stroke-width='1.5'/%3E%3Ccircle cx='16' cy='16' r='7' fill='none' stroke='%23e84030' stroke-width='1' stroke-dasharray='3 3'/%3E%3C/svg%3E">
+
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap');
 :root{
@@ -89,7 +91,7 @@ body.vm #pl{display:none}
 .hfact-btn{background:none;border:none;cursor:pointer;padding:2px 6px;border-radius:2px;transition:background .15s;font-family:'Rajdhani',sans-serif}
 .hfact-btn:hover{background:rgba(255,255,255,.06)}
 .hfact-btn.red:hover{background:rgba(212,42,32,.1)}.hfact-btn.blue:hover{background:rgba(23,104,196,.1)}
-#ver-tag{font-size:8px;letter-spacing:1.5px;color:rgba(174,200,224,.22);font-family:'Share Tech Mono',monospace;pointer-events:none;user-select:none;flex-shrink:0}
+#ver-tag{font-size:8px;letter-spacing:1.5px;color:rgba(63,200,245,.65);font-family:'Share Tech Mono',monospace;pointer-events:none;user-select:none;flex-shrink:0;text-shadow:0 0 6px rgba(63,200,245,.3)}
 .hs{width:1px;height:26px;background:var(--b1);flex-shrink:0}
 .hv{text-align:center;flex-shrink:0}
 .hnum{font-family:'Share Tech Mono',monospace;font-size:20px;line-height:1}
@@ -307,6 +309,9 @@ select.fsel option{background:#060e1a}
 .spd-row{display:flex;align-items:center;gap:8px;margin-top:10px}
 .spd-l{font-size:9px;letter-spacing:2px;color:var(--t2);text-transform:uppercase;white-space:nowrap}
 input[type=range]{flex:1;accent-color:var(--ac);cursor:pointer;height:14px}
+.fsize-row{display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.fsize-lbl{font-size:9px;letter-spacing:2px;color:var(--t2);text-transform:uppercase;white-space:nowrap}
+.fsize-val{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--ac);min-width:22px;text-align:right}
 
 #notif{position:fixed;bottom:50px;left:50%;z-index:200;transform:translateX(-50%) translateY(12px);
   background:var(--s2);border:1px solid var(--b2);padding:8px 20px;font-size:12px;letter-spacing:1.5px;
@@ -402,6 +407,15 @@ input[type=range]{flex:1;accent-color:var(--ac);cursor:pointer;height:14px}
         </div>
         <button class="bxs c" style="width:100%;margin-bottom:5px" onclick="copyViewLink()">🔗 Ссылка для просмотра</button>
         <button class="bxs" style="width:100%;margin-bottom:5px;border-color:rgba(245,166,35,.3);color:rgba(245,166,35,.8)" onclick="document.getElementById('m-fb').classList.add('open')">🌐 Сетевой режим (Firebase)</button>
+        <div class="frow" style="margin-bottom:8px">
+          <label class="fl">Размер шрифта секторов</label>
+          <div class="fsize-row">
+            <span class="fsize-lbl">A</span>
+            <input type="range" id="fsize-rng" min="7" max="18" value="10" oninput="setSectorFont(+this.value)">
+            <span class="fsize-val" id="fsize-val">10px</span>
+            <span class="fsize-lbl" style="font-size:13px">A</span>
+          </div>
+        </div>
         <div style="display:flex;gap:4px;margin-bottom:5px">
           <button class="bxs" style="flex:1" onclick="resetNP()">↺ Позиции</button>
           <button class="bxs" style="flex:1" onclick="resetEdges()">↺ Линии</button>
@@ -429,7 +443,7 @@ input[type=range]{flex:1;accent-color:var(--ac);cursor:pointer;height:14px}
 <div id="nbar">
   <div id="nhist"><div id="nhi"></div></div>
   <div id="ntick" onclick="tgNews()">
-    <span id="ver-tag">V.0.0.0.8</span>
+    <span id="ver-tag">V.0.0.0.9</span>
     <span class="ntag neutral" id="ntag">СВОДКА</span>
     <span id="ntxt">Ожидание данных с фронта...</span>
     <button id="nexp">▲ ИСТОРИЯ</button>
@@ -524,6 +538,76 @@ input[type=range]{flex:1;accent-color:var(--ac);cursor:pointer;height:14px}
   </div>
 </div>
 
+<!-- MODAL: CREATE SECTOR -->
+<div class="mbg" id="m-cre">
+  <div class="mbox" style="max-width:520px"><div class="mstr" style="background:linear-gradient(90deg,rgba(63,200,245,.6),rgba(245,166,35,.4))"></div>
+    <div class="mhd">
+      <div class="mttl">✚ Новый сектор</div>
+      <div class="msub">Заполни данные — сектор появится на карте в месте клика</div>
+    </div>
+    <div class="mbod" style="max-height:72vh;overflow-y:auto;padding:16px 18px">
+      <div class="sed-field">
+        <div class="sed-label">Идентификатор (латиница, без пробелов)</div>
+        <input class="sed-input" id="cre-id" placeholder="например: newfort">
+      </div>
+      <div class="sed-field">
+        <div class="sed-label">Название сектора (RU)</div>
+        <input class="sed-input" id="cre-ru" placeholder="Новый форт">
+      </div>
+      <div class="sed-field">
+        <div class="sed-label">Название (EN)</div>
+        <input class="sed-input" id="cre-en" placeholder="New Fort">
+      </div>
+      <div class="sed-field">
+        <div class="sed-label">Краткое описание</div>
+        <textarea class="sed-textarea" id="cre-desc" rows="2" placeholder="Тактическая характеристика территории..."></textarea>
+      </div>
+      <div class="sed-field">
+        <div class="sed-label">📋 Специальная миссия</div>
+        <div class="sed-section">
+          <textarea class="sed-textarea" id="cre-miss" rows="2" placeholder="Оставь пустым если нет особой миссии..."></textarea>
+        </div>
+      </div>
+      <div class="sed-field">
+        <div class="sed-label" style="color:var(--RL)">⚔ После захвата — Краснорусь</div>
+        <div class="sed-section red-sec">
+          <textarea class="sed-textarea" id="cre-cr" rows="2" placeholder="Результат захвата правительственными войсками..."></textarea>
+        </div>
+      </div>
+      <div class="sed-field">
+        <div class="sed-label" style="color:var(--BL)">⚔ После захвата — ССА</div>
+        <div class="sed-section blue-sec">
+          <textarea class="sed-textarea" id="cre-cb" rows="2" placeholder="Результат захвата силами сепаратистов..."></textarea>
+        </div>
+      </div>
+      <div id="cre-err" style="color:var(--RL);font-size:11px;display:none;margin-top:4px"></div>
+    </div>
+    <div class="mft">
+      <button class="mbtn cancel" onclick="closeM('m-cre')">Отмена</button>
+      <button class="mbtn ok" onclick="confirmCreateSector()">✚ Создать сектор</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: DELETE SECTOR CONFIRM -->
+<div class="mbg" id="m-del-sec">
+  <div class="mbox" style="max-width:380px"><div class="mstr red"></div>
+    <div class="mhd">
+      <div class="mttl">🗑 Удалить сектор?</div>
+      <div class="msub">Это действие нельзя отменить</div>
+    </div>
+    <div style="padding:16px 18px;text-align:center">
+      <div style="font-size:10px;letter-spacing:2px;color:var(--t2);text-transform:uppercase;margin-bottom:6px">Сектор</div>
+      <div id="del-sec-name" style="font-size:20px;font-weight:700;color:var(--RL);letter-spacing:2px;margin-bottom:10px"></div>
+      <div style="font-size:11px;color:var(--t2);line-height:1.7">Сектор будет удалён с карты.<br>Вся статистика боёв по нему будет потеряна.</div>
+    </div>
+    <div class="mft">
+      <button class="mbtn cancel" onclick="closeM('m-del-sec')">Отмена</button>
+      <button class="mbtn rst" onclick="confirmDeleteSector()">🗑 Удалить навсегда</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL: SECTOR EDITOR -->
 <div class="mbg" id="m-sed">
   <div class="mbox" style="max-width:520px"><div class="mstr camp"></div>
@@ -556,7 +640,7 @@ input[type=range]{flex:1;accent-color:var(--ac);cursor:pointer;height:14px}
         </div>
       </div>
     </div>
-    <div class="mft"><button class="mbtn cancel" onclick="closeM('m-sed')">Отмена</button><button class="mbtn ok" onclick="saveSectorEdit()">Сохранить</button></div>
+    <div class="mft"><button class="mbtn cancel" onclick="closeM('m-sed')">Отмена</button><button class="mbtn ok" onclick="saveSectorEdit()">Сохранить</button><button class="mbtn rst" id="sed-del-btn" onclick="promptDeleteSector()" style="display:none">🗑 Удалить</button></div>
   </div>
 </div>
 
@@ -796,6 +880,7 @@ MAPS.forEach(m=>S.sectors[m.id]={owner:'neutral',wins:0,losses:0,lastResult:null
 
 let NP={}; // node positions
 let CAM={x:0,y:58,scale:1};
+let sectorFontSize=10; // label font size, adjustable
 
 /* ═══════════════════════════════════════════════
    PERSISTENCE
@@ -806,6 +891,7 @@ function saveAll(){
     localStorage.setItem('ba6_np',JSON.stringify(NP));
     localStorage.setItem('ba6_cam',JSON.stringify(CAM));
     localStorage.setItem('ba6_edges',JSON.stringify(activeEdges));
+    localStorage.setItem('ba6_fsize',sectorFontSize);
     // save collapsed
     const col={};
     document.querySelectorAll('.psb.col').forEach(b=>{
@@ -838,6 +924,10 @@ function loadAll(){
   try{
     const re=localStorage.getItem('ba6_edges');
     if(re)activeEdges=JSON.parse(re);
+  }catch(e){}
+  try{
+    const rf=localStorage.getItem('ba6_fsize');
+    if(rf)sectorFontSize=parseInt(rf)||10;
   }catch(e){}
   try{
     const rc=localStorage.getItem('ba6_cam');
@@ -1008,9 +1098,10 @@ function drawNode(map,t){
     ctx.fillText(s.lastResult==='win'?'✓':'✗',x,y-R-5);
   }
 
-  ctx.font=isH?'bold 10.5px Rajdhani':'10px Rajdhani';
+  const fs=sectorFontSize;
+  ctx.font=isH?`bold ${fs+0.5}px Rajdhani`:`${fs}px Rajdhani`;
   ctx.textAlign='center';ctx.fillStyle=isH?'#fff':c.text;
-  ctx.fillText(map.ru.toUpperCase(),x,y+R+13);
+  ctx.fillText(map.ru.toUpperCase(),x,y+R+Math.max(11,fs+3));
 
   if(!TL_SNAP&&(s.wins>0||s.losses>0)){
     ctx.font='8.5px Share Tech Mono';
@@ -1231,7 +1322,13 @@ cvs.addEventListener('contextmenu',e=>{
   e.preventDefault();
   if(VIEW)return;
   const hit=getHit(e.clientX,e.clientY);
-  if(hit)openSectorEditor(hit);
+  if(dragMode&&!hit){
+    // Right-click empty area in edit mode → create new sector
+    const{x,y}=s2w(e.clientX,e.clientY);
+    openCreateSector(x,y);
+  } else if(hit){
+    openSectorEditor(hit);
+  }
 });
 
 cvs.addEventListener('mouseleave',()=>{panning=false;dragNode=null;pendingDragNode=null;hovId=null;hovEdge=null;hideTT();});
@@ -1548,7 +1645,43 @@ function openSectorEditor(id){
   document.getElementById('sed-miss').value=map.miss||'';
   document.getElementById('sed-cr').value=map.cR||'';
   document.getElementById('sed-cb').value=map.cB||'';
+  // Show delete button only for custom user-created sectors
+  const isCustom=!!map.custom;
+  document.getElementById('sed-del-btn').style.display=isCustom?'':'none';
   document.getElementById('m-sed').classList.add('open');
+}
+function promptDeleteSector(){
+  if(!sedId)return;
+  const map=MAPS.find(m=>m.id===sedId);if(!map)return;
+  document.getElementById('del-sec-name').textContent=map.ru;
+  closeM('m-sed');
+  document.getElementById('m-del-sec').classList.add('open');
+}
+function confirmDeleteSector(){
+  if(!sedId)return;
+  const map=MAPS.find(m=>m.id===sedId);if(!map)return;
+  const name=map.ru;
+  // Remove from MAPS array
+  const idx=MAPS.findIndex(m=>m.id===sedId);
+  if(idx>=0)MAPS.splice(idx,1);
+  // Remove sector state
+  delete S.sectors[sedId];
+  delete NP[sedId];
+  delete TR[sedId];
+  delete PR[sedId];
+  // Remove any edges connected to this sector
+  activeEdges=activeEdges.filter(([a,b])=>a!==sedId&&b!==sedId);
+  rebuildEdgeSet();
+  // Remove from custom maps storage
+  try{
+    const cm=JSON.parse(localStorage.getItem('ba6_maps')||'{}');
+    delete cm[sedId];
+    localStorage.setItem('ba6_maps',JSON.stringify(cm));
+  }catch(e){}
+  sedId=null;
+  saveAll();renderAll();
+  closeM('m-del-sec');
+  notify('🗑 Сектор «'+name+'» удалён','nl');
 }
 function saveSectorEdit(){
   if(!sedId)return;
@@ -1570,10 +1703,75 @@ function loadCustomMaps(){
   try{
     const cm=JSON.parse(localStorage.getItem('ba6_maps')||'{}');
     Object.entries(cm).forEach(([id,data])=>{
-      const map=MAPS.find(m=>m.id===id);
+      let map=MAPS.find(m=>m.id===id);
+      if(!map&&data.custom){
+        // Re-create custom sector that was added by user
+        map={id,en:data.en||id,ru:data.ru||id,desc:data.desc||'',miss:data.miss,cR:data.cR||'',cB:data.cB||''};
+        MAPS.push(map);
+        if(!S.sectors[id])S.sectors[id]={owner:'neutral',wins:0,losses:0,lastResult:null,lastPlayer:null,battles:[]};
+        TR[id]={t:1,from:'neutral',to:'neutral'};PR[id]={v:0};
+      }
       if(map)Object.assign(map,data);
     });
   }catch(e){}
+}
+
+
+/* ═══════════════════════════════════════════════
+   CREATE SECTOR
+═══════════════════════════════════════════════ */
+let _crePendingPos=null;
+
+function openCreateSector(wx,wy){
+  _crePendingPos={x:Math.max(20,Math.min(WW-20,wx)),y:Math.max(20,Math.min(WH-20,wy))};
+  // Clear fields
+  ['cre-id','cre-ru','cre-en','cre-desc','cre-miss','cre-cr','cre-cb'].forEach(id=>{
+    document.getElementById(id).value='';
+  });
+  document.getElementById('cre-err').style.display='none';
+  document.getElementById('m-cre').classList.add('open');
+}
+
+function confirmCreateSector(){
+  const id=document.getElementById('cre-id').value.trim().replace(/[^a-z0-9_-]/gi,'').toLowerCase();
+  const ru=document.getElementById('cre-ru').value.trim();
+  const en=document.getElementById('cre-en').value.trim();
+  const desc=document.getElementById('cre-desc').value.trim();
+  const err=document.getElementById('cre-err');
+
+  if(!id){err.textContent='Введи идентификатор (латиница)';err.style.display='block';return;}
+  if(!ru){err.textContent='Введи название на русском';err.style.display='block';return;}
+  if(MAPS.find(m=>m.id===id)){err.textContent='Сектор с таким ID уже существует';err.style.display='block';return;}
+  err.style.display='none';
+
+  // Add to MAPS
+  const newMap={
+    id, en:en||id, ru,
+    desc:desc||'Новый сектор на карте кампании.',
+    miss:document.getElementById('cre-miss').value.trim()||undefined,
+    cR:document.getElementById('cre-cr').value.trim()||`ВС КР установили контроль над ${ru}.`,
+    cB:document.getElementById('cre-cb').value.trim()||`ССА захватили ${ru}.`,
+  };
+  MAPS.push(newMap);
+
+  // Init sector state
+  S.sectors[id]={owner:'neutral',wins:0,losses:0,lastResult:null,lastPlayer:null,battles:[]};
+  TR[id]={t:1,from:'neutral',to:'neutral'};
+  PR[id]={v:0};
+
+  // Place at clicked position
+  NP[id]={..._crePendingPos};
+
+  // Save to custom maps
+  try{
+    const cm=JSON.parse(localStorage.getItem('ba6_maps')||'{}');
+    cm[id]={ru:newMap.ru,en:newMap.en,desc:newMap.desc,miss:newMap.miss,cR:newMap.cR,cB:newMap.cB,custom:true};
+    localStorage.setItem('ba6_maps',JSON.stringify(cm));
+  }catch(e){}
+
+  saveAll();renderAll();
+  closeM('m-cre');
+  notify('✚ Сектор «'+ru+'» создан','nw');
 }
 
 /* ═══════════════════════════════════════════════
@@ -1613,6 +1811,12 @@ function openNeutralAll(){
     s.owner='neutral';
   });
   saveAll();renderAll();notify('Все секторы нейтральны','ni');
+}
+function setSectorFont(v){
+  sectorFontSize=v;
+  const el=document.getElementById('fsize-val');
+  if(el)el.textContent=v+'px';
+  saveAll();
 }
 function manualSave(){saveAll();notify('Данные сохранены','nw');}
 
@@ -1877,7 +2081,7 @@ function exportImage(){
   // Version watermark
   ox.textAlign='right';
   ox.font='8px "Share Tech Mono",monospace';ox.fillStyle='rgba(174,200,224,0.15)';
-  ox.fillText('V.0.0.0.8 · Республика Краснорусь',W-8,H-6);
+  ox.fillText('V.0.0.0.9 · Республика Краснорусь',W-8,H-6);
 
   // Download
   const a=document.createElement('a');
@@ -2038,6 +2242,12 @@ loadCustomMaps();
       if(!VIEW)fbPushDebounced();
     }).catch(()=>fbSetStatus('error','Ошибка подключения'));
   }
+})();
+// Sync font size slider after load
+(()=>{
+  const r=document.getElementById('fsize-rng');
+  const v=document.getElementById('fsize-val');
+  if(r){r.value=sectorFontSize;if(v)v.textContent=sectorFontSize+'px';}
 })();
 renderAll();
 renderLog();
