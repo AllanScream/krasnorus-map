@@ -35,6 +35,22 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9000;
 @keyframes fB{0%{opacity:0;background:radial-gradient(circle at var(--fx) var(--fy),rgba(23,104,196,.38) 0%,transparent 55%)}40%{opacity:1}100%{opacity:0}}
 
 
+
+/* ═══ THEMES ═══ */
+body.theme-mil{
+  --bg:#0a0c06;--s1:rgba(12,16,6,.97);--s2:rgba(16,22,8,.98);
+  --b1:rgba(80,100,40,.25);--b2:rgba(120,150,60,.45);
+  --t1:#b8c89a;--t2:rgba(184,200,154,.45);--ac:#a8c840;
+}
+body.theme-light{
+  --bg:#e8eef5;--s1:rgba(220,230,240,.97);--s2:rgba(235,242,250,.98);
+  --b1:rgba(100,140,180,.25);--b2:rgba(60,100,160,.4);
+  --t1:#1a2a3a;--t2:rgba(40,70,110,.55);--ac:#1768c4;
+}
+body.theme-light #stars{opacity:.06}
+body.theme-light #gbg{opacity:.4}
+body.theme-light #vgn{opacity:.3}
+
 /* SECTOR EDITOR styled */
 .sed-field{margin-bottom:14px}
 .sed-label{font-size:9px;letter-spacing:2.5px;color:var(--ac);text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:6px}
@@ -407,6 +423,11 @@ input[type=range]{flex:1;accent-color:var(--ac);cursor:pointer;height:14px}
         </div>
         <button class="bxs c" style="width:100%;margin-bottom:5px" onclick="copyViewLink()">🔗 Ссылка для просмотра</button>
         <button class="bxs" style="width:100%;margin-bottom:5px;border-color:rgba(245,166,35,.3);color:rgba(245,166,35,.8)" onclick="document.getElementById('m-fb').classList.add('open')">🌐 Сетевой режим (Firebase)</button>
+        <div style="display:flex;gap:4px;margin-bottom:5px">
+          <button class="bxs" id="th-dark" onclick="setTheme('dark')" style="flex:1;font-size:10px" title="Тёмная">🌑 Тёмная</button>
+          <button class="bxs" id="th-mil" onclick="setTheme('mil')" style="flex:1;font-size:10px" title="Военная">🎖 Военная</button>
+          <button class="bxs" id="th-light" onclick="setTheme('light')" style="flex:1;font-size:10px" title="Светлая">☀ Светлая</button>
+        </div>
         <div class="frow" style="margin-bottom:8px">
           <label class="fl">Размер шрифта секторов</label>
           <div class="fsize-row">
@@ -443,7 +464,7 @@ input[type=range]{flex:1;accent-color:var(--ac);cursor:pointer;height:14px}
 <div id="nbar">
   <div id="nhist"><div id="nhi"></div></div>
   <div id="ntick" onclick="tgNews()">
-    <span id="ver-tag">V.0.0.0.9</span>
+    <span id="ver-tag">V.0.0.1.0</span>
     <span class="ntag neutral" id="ntag">СВОДКА</span>
     <span id="ntxt">Ожидание данных с фронта...</span>
     <button id="nexp">▲ ИСТОРИЯ</button>
@@ -1694,7 +1715,7 @@ function saveSectorEdit(){
   // Save custom map data
   try{
     const cm=JSON.parse(localStorage.getItem('ba6_maps')||'{}');
-    cm[sedId]={ru:map.ru,desc:map.desc,miss:map.miss,cR:map.cR,cB:map.cB};
+    cm[sedId]={ru:map.ru,desc:map.desc,miss:map.miss,cR:map.cR,cB:map.cB,custom:!!map.custom};
     localStorage.setItem('ba6_maps',JSON.stringify(cm));
   }catch(e){}
   closeM('m-sed');renderAll();notify('Сектор обновлён','nw');
@@ -1751,6 +1772,7 @@ function confirmCreateSector(){
     miss:document.getElementById('cre-miss').value.trim()||undefined,
     cR:document.getElementById('cre-cr').value.trim()||`ВС КР установили контроль над ${ru}.`,
     cB:document.getElementById('cre-cb').value.trim()||`ССА захватили ${ru}.`,
+    custom:true,  // marks as user-created — enables delete button
   };
   MAPS.push(newMap);
 
@@ -2081,7 +2103,7 @@ function exportImage(){
   // Version watermark
   ox.textAlign='right';
   ox.font='8px "Share Tech Mono",monospace';ox.fillStyle='rgba(174,200,224,0.15)';
-  ox.fillText('V.0.0.0.9 · Республика Краснорусь',W-8,H-6);
+  ox.fillText('V.0.0.1.0 · Республика Краснорусь',W-8,H-6);
 
   // Download
   const a=document.createElement('a');
@@ -2213,6 +2235,148 @@ function notify(msg,cls){
   const n=document.getElementById('notif');n.textContent=msg;n.className='show '+cls;
   if(nT)clearTimeout(nT);nT=setTimeout(()=>n.className='',2600);
 }
+
+
+/* ═══════════════════════════════════════════════
+   THEME SWITCHER
+═══════════════════════════════════════════════ */
+function setTheme(t){
+  document.body.classList.remove('theme-mil','theme-light');
+  if(t==='mil')document.body.classList.add('theme-mil');
+  else if(t==='light')document.body.classList.add('theme-light');
+  localStorage.setItem('ba6_theme',t);
+  // Highlight active button
+  ['dark','mil','light'].forEach(n=>{
+    const b=document.getElementById('th-'+n);
+    if(b)b.style.borderColor=n===t?'var(--ac)':'';
+  });
+  notify('Тема: '+{dark:'🌑 Тёмная',mil:'🎖 Военная',light:'☀ Светлая'}[t],'ni');
+}
+(()=>{
+  const t=localStorage.getItem('ba6_theme')||'dark';
+  setTheme(t);
+})();
+
+/* ═══════════════════════════════════════════════
+   HOTKEYS
+   E → toggle edit/drag mode
+   Space → reset camera
+   S → save
+   Ctrl+Z → undo last battle
+   Escape → close top modal
+═══════════════════════════════════════════════ */
+document.addEventListener('keydown',e=>{
+  // Don't fire when typing in an input/textarea
+  if(['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName))return;
+  
+  // Escape — close topmost open modal
+  if(e.key==='Escape'){
+    const open=[...document.querySelectorAll('.mbg.open')];
+    if(open.length){open[open.length-1].classList.remove('open');e.preventDefault();}
+    else if(dragMode){toggleDragMode();e.preventDefault();}
+    return;
+  }
+  if(e.ctrlKey||e.metaKey){
+    if(e.key==='z'||e.key==='Z'){e.preventDefault();undoLast();return;}
+    if(e.key==='s'||e.key==='S'){e.preventDefault();manualSave();return;}
+    return;
+  }
+  switch(e.key.toLowerCase()){
+    case 'e': if(!VIEW)toggleDragMode(); break;
+    case ' ': e.preventDefault(); resetCam(); break;
+  }
+});
+
+/* ═══════════════════════════════════════════════
+   UNDO LAST BATTLE (Ctrl+Z)
+═══════════════════════════════════════════════ */
+function undoLast(){
+  if(VIEW){notify('Режим просмотра — отмена недоступна','nl');return;}
+  if(!S.log.length){notify('Нечего отменять','ni');return;}
+  const last=S.log[0];
+  const sec=S.sectors[last.mapId];
+  const map=MAPS.find(m=>m.id===last.mapId);
+  if(!sec||!map){notify('Не удалось отменить','nl');return;}
+
+  // Reverse the battle
+  if(last.result==='win')sec.wins=Math.max(0,sec.wins-1);
+  else sec.losses=Math.max(0,sec.losses-1);
+  sec.battles.pop(); // remove last battle entry
+  S.day=Math.max(1,S.day-1);
+
+  // Restore previous owner from log[1] or neutral
+  const prev=S.log[1]?.mapId===last.mapId?S.log[1].newOwner:'neutral';
+  sec.owner=prev;
+  sec.lastResult=S.log[1]?.result||null;
+  sec.lastPlayer=S.log[1]?.playerId||null;
+
+  S.log.shift(); // remove from log
+  S.news.shift(); // remove news entry
+  saveAll();renderAll();renderLog();renderNews();
+  notify('↩ Отменено: '+map.ru,'ni');
+}
+
+/* ═══════════════════════════════════════════════
+   TOUCH SUPPORT (pinch zoom + tap)
+═══════════════════════════════════════════════ */
+let _touches={},_pinchDist=null,_tapTimer=null;
+
+cvs.addEventListener('touchstart',e=>{
+  e.preventDefault();
+  Array.from(e.changedTouches).forEach(t=>_touches[t.identifier]={x:t.clientX,y:t.clientY});
+  const pts=Object.values(_touches);
+  if(pts.length===2){
+    _pinchDist=Math.hypot(pts[1].x-pts[0].x,pts[1].y-pts[0].y);
+  }
+  if(pts.length===1&&!_tapTimer){
+    _tapTimer=setTimeout(()=>{_tapTimer=null;},300);
+  }
+},{passive:false});
+
+cvs.addEventListener('touchmove',e=>{
+  e.preventDefault();
+  const pts=Object.values(_touches);
+  if(e.touches.length===2){
+    const t0=e.touches[0],t1=e.touches[1];
+    const dist=Math.hypot(t1.clientX-t0.clientX,t1.clientY-t0.clientY);
+    if(_pinchDist){
+      const factor=dist/_pinchDist;
+      const cx=(t0.clientX+t1.clientX)/2,cy=(t0.clientY+t1.clientY)/2;
+      doZoom(factor>1?1.04:0.96,cx,cy);
+    }
+    _pinchDist=dist;
+  } else if(e.touches.length===1){
+    const t=e.touches[0];
+    const prev=_touches[t.identifier];
+    if(prev){
+      CAM.x+=t.clientX-prev.x;
+      CAM.y+=t.clientY-prev.y;
+      _touches[t.identifier]={x:t.clientX,y:t.clientY};
+    }
+  }
+},{passive:false});
+
+cvs.addEventListener('touchend',e=>{
+  e.preventDefault();
+  Array.from(e.changedTouches).forEach(t=>{
+    if(_tapTimer&&!dragMode&&!VIEW){
+      const hit=getHit(t.clientX,t.clientY);
+      if(hit)openRecM(hit);
+    }
+    delete _touches[t.identifier];
+  });
+  if(Object.keys(_touches).length<2)_pinchDist=null;
+},{passive:false});
+
+/* ═══════════════════════════════════════════════
+   HOTKEY HINT (shown briefly on load)
+═══════════════════════════════════════════════ */
+setTimeout(()=>{
+  if(!VIEW&&!localStorage.getItem('ba6_hints_shown')){
+    notify('Горячие клавиши: E=редактор  Пробел=сбросить вид  Ctrl+Z=отмена','ni');
+    localStorage.setItem('ba6_hints_shown','1');
+  }
+},2000);
 
 /* ═══════════════════════════════════════════════
    LOOP
